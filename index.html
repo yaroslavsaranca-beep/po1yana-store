@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-t="10">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -14,7 +14,8 @@
 html{background:var(--ink)}html,body{color:var(--light);font:400 15px/1.4 var(--body)}
 body::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(#0a0a0e00,#0a0a0e59),url(bg.jpg) center/cover no-repeat,#0a0a0e}
 body{padding:env(safe-area-inset-top) 14px calc(100px + env(safe-area-inset-bottom))}
-:focus-visible{outline:2px solid #fff;outline-offset:2px}
+:focus-visible{outline:1px solid #ffffff80;outline-offset:2px}
+.nav button:focus-visible{outline:none}
 [hidden]{display:none!important}
 header{padding:22px 2px 14px}
 h1{font:800 clamp(26px,9vw,40px)/1 var(--head);letter-spacing:-.02em}
@@ -784,8 +785,8 @@ $("rsync").onclick=async()=>{const b=$("rsync");b.disabled=true;b.textContent="�
 
 // ---------- пробник: тёмный фон + лента отзывов на главной (только по ссылке с ?preview) ----------
 const PREVIEW=/[?&]preview\b/.test(location.search);
-// варианты оформления на выбор: ?theme=1..10
-const THEME=(location.search.match(/[?&]theme=(10|[1-9])\b/)||[])[1];if(THEME)document.documentElement.dataset.t=THEME;
+// Основной стиль: 10 (чёрный с рамками). Другие варианты для сравнения: ?theme=1..10
+const THEME=(location.search.match(/[?&]theme=(10|[1-9])\b/)||[])[1];document.documentElement.dataset.t=THEME||"10";
 if(PREVIEW)document.documentElement.classList.add("dark");
 function renderStrip(){if(!PREVIEW)return;const box=$("rstrip");
  const l=REVIEWS.filter(r=>r.text&&r.author).slice(0,8);if(!l.length){box.hidden=true;return}
