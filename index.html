@@ -176,6 +176,9 @@ h1{background:linear-gradient(180deg,#fff 0%,#cfd2da 44%,#6f737e 52%,#e9ebf1 70%
 /* ===== v2: компактная шапка, премиальные карточки, «Ещё», похожие товары ===== */
 header.top{padding:16px 2px 8px}
 header.top h1{font-size:clamp(20px,6vw,26px)}
+/* аватарка рядом с названием */
+header.top{display:flex;align-items:center;gap:11px}
+.ava{flex:none;width:44px;height:44px;border-radius:50%;object-fit:cover;background:#ffffff1f;border:1.5px solid #ffffffb3;box-shadow:0 0 0 3px #ffffff1a,0 6px 18px #0009}
 .stick{position:sticky;top:0;z-index:4;margin:0 -14px;padding:6px 14px 2px;background:linear-gradient(#15151af0,#15151ad0 75%,#15151a00);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 .stick .search{margin:4px 0 8px}
 
@@ -267,7 +270,7 @@ body{max-width:620px;margin:0 auto}
 <body>
 
 <section id="v-catalog">
-  <header class="top"><h1>Po1yana.store</h1></header>
+  <header class="top"><img class="ava" src="avatar.jpg" alt="" width="44" height="44"><h1>Po1yana.store</h1></header>
   <div id="rstrip" hidden></div>
   <div class="stick">
     <input class="search" id="q" type="search" placeholder="Поиск по бренду или модели" aria-label="Поиск">
