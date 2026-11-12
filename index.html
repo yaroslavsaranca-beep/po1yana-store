@@ -136,6 +136,22 @@ h1{background:linear-gradient(180deg,#fff 0%,#cfd2da 44%,#6f737e 52%,#e9ebf1 70%
 .err{color:#ff9b9b;font-size:13px;margin-top:10px}
 #asheet{max-height:92vh;overflow-y:auto}
 
+/* отзывы */
+.rv{padding:16px}
+.rvh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding-right:28px}
+.rva{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rvd{flex:none;color:#f6f5f1b0;font-size:13px}
+.rvi{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:99px;background:#ffffff1c;border:1px solid #ffffff40;font-size:12px}
+.rvt{margin-top:8px;white-space:pre-line;overflow-wrap:anywhere}
+.rvp{position:relative;z-index:1;display:flex;gap:8px;margin-top:12px;overflow-x:auto;scrollbar-width:none}
+.rvp::-webkit-scrollbar{display:none}
+.rvp img{flex:none;width:104px;height:130px;object-fit:cover;border-radius:10px;background:#ffffff14;cursor:pointer}
+.rvp img:only-child{width:auto;max-width:100%;height:auto;max-height:340px}
+.rvx{position:absolute;z-index:1;top:12px;right:12px;width:28px;height:28px;border-radius:50%;border:1px solid #ff9b9b66;background:#15151a66;color:#ff9b9b;cursor:pointer;line-height:1}
+.rvtop{display:flex;justify-content:space-between;align-items:center;margin:0 2px 12px;color:#f6f5f1b0}
+.gal.full img{aspect-ratio:auto;max-height:75vh;object-fit:contain}
+.nav button{min-width:0;white-space:nowrap}
+
 /* широкий экран (ПК): магазин по центру, как на телефоне */
 body{max-width:620px;margin:0 auto}
 .nav{left:50%;right:auto;transform:translateX(-50%);width:min(596px,calc(100% - 24px))}
@@ -170,6 +186,15 @@ body{max-width:620px;margin:0 auto}
   <div class="panel"><h3>Оплата</h3><ul><li>Товар под заказ оплачивается исключительно полной оплатой</li></ul></div>
 </section>
 
+<section id="v-reviews" hidden>
+  <h2 class="t">Отзывы</h2>
+  <p class="lead">Реальные отзывы покупателей из Telegram-канала магазина.</p>
+  <div class="rvtop"><span id="rcount"></span><button class="chip sm" id="rsync" hidden>Обновить из канала</button></div>
+  <div id="rlist"></div>
+  <a class="buy" data-go="leave">Оставить отзыв</a>
+  <a class="buy ghost" data-go="reviews">Все отзывы в канале</a>
+</section>
+
 <section id="v-about" hidden>
   <h2 class="t">О магазине</h2>
   <p class="lead">Po1yana.store: оригинальная брендовая одежда, обувь и сумки. Товары в наличии и под заказ.</p>
@@ -182,8 +207,8 @@ body{max-width:620px;margin:0 auto}
   <div class="panel"><h3>Доставка</h3>
     <ul><li>Способ и сроки доставки согласовываются перед покупкой</li></ul></div>
   <div class="panel"><h3>Отзывы</h3>
-    <p>Отзывы покупателей опубликованы в Telegram-канале магазина под тегом #reviews.</p>
-    <a class="link" data-go="reviews">Читать отзывы</a></div>
+    <p>Отзывы покупателей собраны в отдельном разделе.</p>
+    <a class="link" data-tab-go="reviews" href="#">Читать отзывы</a></div>
   <div class="panel"><h3>Контакты</h3>
     <p>По вопросам заказа: Telegram @poonnnnn</p>
     <a class="link" data-go="dm">Написать в Telegram</a>
@@ -203,6 +228,7 @@ body{max-width:620px;margin:0 auto}
   <button data-tab="catalog" aria-current="page"><svg viewBox="0 0 24 24"><path d="M6 7h12l1 13H5L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>Каталог</button>
   <button data-tab="favs"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>Избранное</button>
   <button data-tab="order"><svg viewBox="0 0 24 24"><path d="M4 8l8-4 8 4v8l-8 4-8-4V8z"/><path d="M4 8l8 4 8-4M12 12v8"/></svg>Под заказ</button>
+  <button data-tab="reviews"><svg viewBox="0 0 24 24"><path d="M5 5h14v10H10l-5 4V5z"/><path d="M9 9h6M9 12h4"/></svg>Отзывы</button>
   <button data-tab="about"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>О магазине</button>
 </nav>
 <dialog id="sheet"></dialog>
@@ -219,7 +245,8 @@ const LINKS = {
   order:`https://t.me/${SELLER}?text=${encodeURIComponent("Здравствуйте! Интересует товар под заказ.")}`,
   tg:"https://t.me/po1yana_store",
   ig:"https://www.instagram.com/po1yana.store",
-  reviews:"https://t.me/s/po1yana_store?q=%23reviews"
+  reviews:"https://t.me/s/po1yana_store?q=%23review",
+  leave:`https://t.me/${SELLER}?text=${encodeURIComponent("Здравствуйте! Хочу оставить отзыв: ")}`
 };
 const CATS=["Обувь","Худи / Футболки","Куртки","Костюмы","Шорты / Штаны","Сумки","Аксессуары"];
 // ---- база ----
@@ -249,10 +276,10 @@ function go(url){tg?(url.includes("t.me/")?tg.openTelegramLink(url):tg.openLink(
 document.body.addEventListener("click",e=>{const a=e.target.closest("[data-go]");if(a){e.preventDefault();go(LINKS[a.dataset.go])}});
 
 function tab(name){
- ["catalog","favs","order","about","admin"].forEach(t=>$("v-"+t).hidden=t!==name);
+ ["catalog","favs","order","reviews","about","admin"].forEach(t=>$("v-"+t).hidden=t!==name);
  [...$("nav").children].forEach(b=>b.toggleAttribute("aria-current",b.dataset.tab===name)||b.removeAttribute("aria-current"));
  [...$("nav").children].forEach(b=>{if(b.dataset.tab===name)b.setAttribute("aria-current","page")});
- if(name==="favs")renderFavs();if(name==="admin")renderAdmin();window.scrollTo(0,0)}
+ if(name==="favs")renderFavs();if(name==="admin")renderAdmin();if(name==="reviews")openReviews();window.scrollTo(0,0)}
 $("nav").onclick=e=>{const b=e.target.closest("button");if(b)tab(b.dataset.tab)};
 
 const chips=$("chips");
@@ -285,7 +312,7 @@ function render(){
 function renderFavs(){
  const l=order(ITEMS.filter(i=>favs.has(i.id)),"new");
  $("fgrid").innerHTML=l.length?l.map(card).join(""):`<div class="empty">Пока пусто. Нажмите на сердечко у товара, и он появится здесь.<button class="buy" data-tab-go="catalog">К каталогу</button></div>`}
-document.body.addEventListener("click",e=>{const g=e.target.closest("[data-tab-go]");if(g)tab(g.dataset.tabGo)});
+document.body.addEventListener("click",e=>{const g=e.target.closest("[data-tab-go]");if(g){e.preventDefault();tab(g.dataset.tabGo)}});
 
 function grids(e){
  const f=e.target.closest("[data-fav]");
@@ -403,6 +430,42 @@ async function save(){
  const fd=new FormData();fd.append("item",JSON.stringify(item));draft.files.forEach((f,k)=>fd.append("files",f.blob,`p${k}.jpg`));
  try{const {item:saved}=await api(fd,true);ITEMS=[saved,...ITEMS.filter(x=>x.id!==saved.id)];as.close();renderAdmin();render()}
  catch(x){err.hidden=false;err.textContent=x.message||"Не удалось сохранить";btn.disabled=false;btn.textContent="Повторить"}}
+
+// ---------- отзывы ----------
+let REVIEWS=[],rState="idle";
+const rword=n=>{const m=n%10,d=n%100;return m===1&&d!==11?"отзыв":m>=2&&m<=4&&(d<12||d>14)?"отзыва":"отзывов"};
+const rdate=s=>{try{return new Date(s).toLocaleDateString("ru-RU",{day:"numeric",month:"long",year:"numeric"}).replace(/\s*г\.$/,"")}catch(e){return ""}};
+async function loadReviews(){
+ rState="loading";renderReviews();
+ try{const r=await fetch(SB_URL+"/rest/v1/reviews?select=*&order=posted_at.desc",{headers:{apikey:SB_KEY}});
+  if(!r.ok)throw 0;REVIEWS=await r.json();rState="ok"}catch(e){rState="err"}
+ renderReviews()}
+function openReviews(){$("rsync").hidden=!isAdmin;if(rState==="idle"||rState==="err")loadReviews();else renderReviews()}
+function renderReviews(){
+ const box=$("rlist");
+ if(rState==="loading"&&!REVIEWS.length){$("rcount").textContent="";box.innerHTML=`<p class="loading">Загружаем отзывы…</p>`;return}
+ if(rState==="err"){$("rcount").textContent="";box.innerHTML=`<div class="empty">Не удалось загрузить отзывы.<button class="buy ghost" onclick="loadReviews()">Обновить</button></div>`;return}
+ $("rcount").textContent=REVIEWS.length?REVIEWS.length+" "+rword(REVIEWS.length):"";
+ box.innerHTML=REVIEWS.map(r=>`<article class="panel rv" data-rid="${r.id}">
+  ${isAdmin?`<button class="rvx" data-rhide aria-label="Скрыть отзыв">×</button>`:""}
+  <div class="rvh"><span class="rva">${esc(r.author||"Покупатель")}</span><span class="rvd">${esc(rdate(r.posted_at))}</span></div>
+  ${r.item?`<span class="rvi">${esc(r.item)}</span>`:""}
+  ${r.text?`<p class="rvt">${esc(r.text)}</p>`:""}
+  ${r.photos.length?`<div class="rvp">${r.photos.map((p,k)=>`<img src="${esc(photoUrl(p))}" data-rph="${k}" alt="Фото к отзыву" loading="lazy">`).join("")}</div>`:""}
+ </article>`).join("")||`<div class="empty">Отзывов пока нет.</div>`}
+$("rlist").addEventListener("click",e=>{const card=e.target.closest("[data-rid]");if(!card)return;const id=+card.dataset.rid;const r=REVIEWS.find(x=>x.id===id);if(!r)return;
+ const ph=e.target.closest("[data-rph]");
+ if(ph){const k=+ph.dataset.rph;
+  sheet.innerHTML=`<button class="close" aria-label="Закрыть">×</button><div class="brand">${esc(r.author||"Покупатель")}</div><h2>Фото к отзыву</h2>
+   <div class="gal full">${r.photos.map(p=>`<img src="${esc(photoUrl(p))}" alt="">`).join("")}</div>${r.photos.length>1?`<div class="gcount">${r.photos.length} фото, листайте вбок</div>`:""}`;
+  sheet.querySelector(".close").onclick=()=>sheet.close();sheet.showModal();
+  const im=sheet.querySelectorAll(".gal img")[k];if(im)im.scrollIntoView({inline:"center",block:"nearest"});return}
+ if(e.target.closest("[data-rhide]"))ask("Скрыть этот отзыв из приложения? В канале он останется.",async ok=>{if(!ok)return;
+  try{await api({action:"review_hide",id});REVIEWS=REVIEWS.filter(x=>x.id!==id);renderReviews()}catch(x){alertMsg(x.message)}})});
+$("rsync").onclick=async()=>{const b=$("rsync");b.disabled=true;b.textContent="Ищем #review…";
+ try{const d=await api({action:"reviews_sync"});b.textContent=d.busy?"Уже обновляется":d.added?`Добавлено: ${d.added}`:"Новых нет";await loadReviews()}
+ catch(x){alertMsg(x.message);b.textContent="Обновить из канала"}
+ setTimeout(()=>{b.disabled=false;b.textContent="Обновить из канала"},2500)};
 
 // ---------- старт ----------
 render();
