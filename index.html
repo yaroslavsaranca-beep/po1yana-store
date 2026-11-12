@@ -139,6 +139,9 @@ h1{background:linear-gradient(180deg,#fff 0%,#cfd2da 44%,#6f737e 52%,#e9ebf1 70%
 /* широкий экран (ПК): магазин по центру, как на телефоне */
 body{max-width:620px;margin:0 auto}
 .nav{left:50%;right:auto;transform:translateX(-50%);width:min(596px,calc(100% - 24px))}
+
+/* ПК с мышкой: категории переносятся на вторую строку вместо прокрутки */
+@media (hover:hover) and (pointer:fine){.row .chips{flex-wrap:wrap;overflow:visible}}
 </style>
 </head>
 <body>
