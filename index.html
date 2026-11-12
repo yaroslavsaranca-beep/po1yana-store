@@ -255,25 +255,23 @@ dialog .buy{margin-top:6px}
 .fbtn.on::after{background:#fff;border-color:#15151a}
 .name{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
-/* ===== пробник (только по ссылке ?preview): тёмный фон и лента отзывов ===== */
-html.dark body::before{background:
- radial-gradient(90% 55% at 50% -8%,#3a3f52 0%,#1d1f29 45%,transparent 75%),
- radial-gradient(70% 40% at 100% 100%,#232634 0%,transparent 70%),
- url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
- #0e0e12}
-#rstrip{margin:2px 0 6px}
-.rsh{display:flex;justify-content:space-between;align-items:baseline;margin:0 2px 8px}
-.rsh b{font:800 15px var(--head)}
-.rsh a{color:#f6f5f1b0;font-size:13px;text-decoration:none;cursor:pointer}
-.rs{display:flex;gap:10px;overflow-x:auto;margin:0 -14px;padding:0 14px 6px;scrollbar-width:none}
-.rs::-webkit-scrollbar{display:none}
-.rsc{flex:none;width:230px;display:grid;grid-template-columns:52px 1fr;gap:10px;padding:10px;border-radius:14px;background:linear-gradient(160deg,#ffffff1f,#ffffff08);border:1px solid #ffffff26;color:var(--light);text-align:left;font:inherit;cursor:pointer}
-.rsc img,.rsc .ph{width:52px;height:64px;border-radius:9px;object-fit:cover;background:#ffffff14;display:grid;place-items:center;font-size:20px}
-.rsc b{display:block;font-size:13px}
-.rsc span{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;font-size:12.5px;line-height:1.35;color:#f6f5f1d0}
+/* ===== «Цена снижена», «Следить за брендом», статистика в админке ===== */
+.price.pdrop,b.pdrop{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 7px}
+.pdrop .pnew{color:#ff6b6b}
+.pdrop s{color:#ffffff73;font-weight:400;font-size:13px}
+.pdrop .pct{padding:1px 6px;border-radius:6px;background:#ff6b6b26;color:#ff8a8a;font:600 11px var(--body)}
+.follow{display:flex;align-items:center;gap:9px;width:100%;margin:10px 0 2px;padding:11px 13px;border-radius:12px;border:1.5px solid #ffffff59;background:#141417;color:#fff;font:500 14px var(--body);text-align:left;cursor:pointer}
+.follow svg{flex:none;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
+.follow span{flex:1}
+.follow small{color:#ffffff80;font-size:12px}
+.follow.on{border-color:#ffffffb3}
+.follow.on svg{fill:#fff}
+#bfol .follow{margin:-4px 0 14px}
+.arow small{display:block}
+.astat{color:#ffffffcc!important;margin-top:2px}
 
-/* ===== варианты оформления на выбор (только по ссылке ?theme=1..4) ===== */
-/* общее для всех вариантов: карточки и панели тёмные, а не серые */
+/* ===== основной стиль: чёрные элементы с серебристыми рамками (html data-t="10") ===== */
+/* база: карточки и панели тёмные */
 html[data-t] .tag,html[data-t] .panel{background:linear-gradient(160deg,#18181ee0,#0b0b0ff0)}
 html[data-t] .tag::after,html[data-t] .panel::after{background:linear-gradient(145deg,#ffffff4d,#ffffff0f 40%,#ffffff26)}
 html[data-t] .nav{background:#0b0b0fe0}
@@ -281,62 +279,6 @@ html[data-t] .search,html[data-t] .chip,html[data-t] .fbtn{background:#0b0b0fb8;
 html[data-t] .stick{background:linear-gradient(#0a0a0ef5,#0a0a0ed9 75%,#0a0a0e00)}
 html[data-t] dialog{background:linear-gradient(160deg,#17171df5,#0b0b0ffa)}
 html[data-t] .buy.ghost{background:#ffffff0d;border:1px solid #ffffff2e;box-shadow:none;color:#fff}
-/* 1. Монохром: белая кнопка, чёрные карточки */
-html[data-t="1"] .buy:not(.ghost){background:linear-gradient(180deg,#fff,#dcdee4);color:#111;box-shadow:0 6px 18px #0009}
-html[data-t="1"] .chip[aria-pressed=true],html[data-t="1"] .nav button[aria-current=page]{background:#fff;color:#111;border-color:#fff}
-/* 2. Тёмно-синий */
-html[data-t="2"] .buy:not(.ghost),html[data-t="2"] .chip[aria-pressed=true],html[data-t="2"] .nav button[aria-current=page]{background:linear-gradient(180deg,#2c418f,#152259);color:#fff;border:1px solid #4a60b5;box-shadow:inset 0 1px 0 #ffffff2e}
-/* 3. Изумруд */
-html[data-t="3"] .buy:not(.ghost),html[data-t="3"] .chip[aria-pressed=true],html[data-t="3"] .nav button[aria-current=page]{background:linear-gradient(180deg,#1f7d55,#0d4630);color:#fff;border:1px solid #33a877;box-shadow:inset 0 1px 0 #ffffff2e}
-/* 4. Бордо */
-html[data-t="4"] .buy:not(.ghost),html[data-t="4"] .chip[aria-pressed=true],html[data-t="4"] .nav button[aria-current=page]{background:linear-gradient(180deg,#8c1d2e,#4c0c17);color:#fff;border:1px solid #b9384c;box-shadow:inset 0 1px 0 #ffffff2e}
-
-/* 5. Без карточек: плитки без рамок и подложки, как в Vinted / Grailed; белая кнопка */
-html[data-t="5"] .tag{background:none;box-shadow:none;padding:0;border-radius:0}
-html[data-t="5"] .tag::after{display:none}
-html[data-t="5"] .pic{border-radius:14px}
-html[data-t="5"] .info{padding:8px 2px 4px;text-shadow:0 1px 6px #000c}
-html[data-t="5"] .grid{gap:22px 12px}
-html[data-t="5"] .buy:not(.ghost){background:linear-gradient(180deg,#fff,#dcdee4);color:#111;box-shadow:0 6px 18px #0009}
-html[data-t="5"] .chip[aria-pressed=true],html[data-t="5"] .nav button[aria-current=page]{background:#fff;color:#111;border-color:#fff}
-/* 6. Светлые карточки-бирки с чёрным текстом; чёрная кнопка */
-html[data-t="6"] .tag{background:#f3f2ee;color:#121214;box-shadow:0 10px 26px #000a}
-html[data-t="6"] .tag::after{display:none}
-html[data-t="6"] .tag .brand,html[data-t="6"] .tag .meta{color:#6d6c68}
-html[data-t="6"] .tag .price{color:#121214}
-html[data-t="6"] .tag.sold{opacity:.75}
-html[data-t="6"] .buy:not(.ghost){background:#f3f2ee;color:#121214;box-shadow:0 6px 18px #0009}
-html[data-t="6"] .chip[aria-pressed=true],html[data-t="6"] .nav button[aria-current=page]{background:#f3f2ee;color:#121214;border-color:#f3f2ee}
-
-/* ===== графитово-чёрные варианты (?theme=7..9). Фон, аватар и название не трогаем ===== */
-/* 7. Графит: плотный графит, мягкие рамки */
-html[data-t="7"] .tag,html[data-t="7"] .panel{background:#1b1b1f}
-html[data-t="7"] .tag::after,html[data-t="7"] .panel::after{background:linear-gradient(145deg,#ffffff38,#ffffff0d 45%,#ffffff1f)}
-html[data-t="7"] .search,html[data-t="7"] .chip,html[data-t="7"] .fbtn{background:#1b1b1f;border-color:#ffffff24;box-shadow:none}
-html[data-t="7"] .nav{background:#1b1b1ff2;border-color:#ffffff24;box-shadow:0 10px 30px #000a}
-html[data-t="7"] dialog{background:#18181c;border-top-color:#ffffff24}
-html[data-t="7"] .buy{background:#2a2a30;color:#fff;border:1px solid #ffffff2e;box-shadow:0 8px 22px #000a}
-html[data-t="7"] .buy.ghost{background:#202025;border-color:#ffffff1f;box-shadow:none}
-html[data-t="7"] .chip[aria-pressed=true],html[data-t="7"] .nav button[aria-current=page]{background:#34343b;color:#fff;border-color:#ffffff38;box-shadow:none}
-/* 8. Чёрный графит: почти чёрные элементы, тонкие рамки, максимум контраста с фото */
-html[data-t="8"] .tag,html[data-t="8"] .panel{background:#0f0f11}
-html[data-t="8"] .tag::after,html[data-t="8"] .panel::after{background:linear-gradient(145deg,#ffffff26,#ffffff0a 45%,#ffffff17)}
-html[data-t="8"] .search,html[data-t="8"] .chip,html[data-t="8"] .fbtn{background:#0f0f11;border-color:#ffffff1c;box-shadow:none}
-html[data-t="8"] .nav{background:#0f0f11f5;border-color:#ffffff1c;box-shadow:0 10px 30px #000c}
-html[data-t="8"] dialog{background:#0f0f11;border-top-color:#ffffff1c}
-html[data-t="8"] .buy{background:#1c1c20;color:#fff;border:1px solid #ffffff33;box-shadow:none}
-html[data-t="8"] .buy.ghost{background:#141417;border-color:#ffffff1a}
-html[data-t="8"] .chip[aria-pressed=true],html[data-t="8"] .nav button[aria-current=page]{background:#26262b;color:#fff;border-color:#ffffff33;box-shadow:none}
-/* 9. Графит + хром: графитовые элементы с металлической рамкой, как у названия */
-html[data-t="9"] .tag,html[data-t="9"] .panel{background:#151518}
-html[data-t="9"] .search,html[data-t="9"] .chip,html[data-t="9"] .fbtn{background:#151518;border-color:#ffffff33;box-shadow:inset 0 1px 0 #ffffff1a}
-html[data-t="9"] .nav{background:#151518f2;border-color:#ffffff33}
-html[data-t="9"] dialog{background:#141417;border-top-color:#ffffff40}
-html[data-t="9"] .buy{position:relative;background:linear-gradient(180deg,#2b2b31,#17171b);color:#fff;border:1px solid transparent;
- background-clip:padding-box;box-shadow:0 0 0 1px #c9ccd466,inset 0 1px 0 #ffffff2e,0 8px 22px #000b}
-html[data-t="9"] .buy.ghost{background:#1a1a1e;box-shadow:0 0 0 1px #ffffff26}
-html[data-t="9"] .chip[aria-pressed=true],html[data-t="9"] .nav button[aria-current=page]{background:linear-gradient(180deg,#2e2e35,#1a1a1f);color:#fff;border-color:#c9ccd480;box-shadow:inset 0 1px 0 #ffffff33}
-
 /* 10. Чёрный (как 8) + чёткие рамки (как во 2), но серебристо-белые */
 html[data-t="10"] .tag,html[data-t="10"] .panel{background:#0f0f11}
 html[data-t="10"] .tag::after,html[data-t="10"] .panel::after{background:linear-gradient(145deg,#ffffff59,#ffffff14 40%,#ffffff33)}
@@ -369,7 +311,6 @@ body{max-width:620px;margin:0 auto}
 
 <section id="v-catalog">
   <header class="top"><img class="ava" src="avatar.jpg" alt="" width="44" height="44"><h1>Po1yana.store</h1></header>
-  <div id="rstrip" hidden></div>
   <div class="stick">
     <input class="search" id="q" type="search" placeholder="Поиск по бренду или модели" aria-label="Поиск">
     <div class="row"><div class="chips" id="chips"></div><button class="fbtn" id="fbtn" aria-label="Фильтры: бренд и размер"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button></div>
@@ -377,6 +318,7 @@ body{max-width:620px;margin:0 auto}
   <div class="bar"><span id="count"></span>
     <select id="sort" aria-label="Сортировка"><option value="new">Сначала новые</option><option value="asc">Дешевле</option><option value="desc">Дороже</option></select>
   </div>
+  <div id="bfol"></div>
   <main class="grid" id="grid"></main>
 </section>
 
@@ -423,6 +365,8 @@ body{max-width:620px;margin:0 auto}
   <p class="lead">Быстрее всего добавлять товар так: перешлите пост из канала боту @po1yana_store_bot. Здесь можно добавить товар вручную, изменить цену, статус или удалить его.</p>
   <button class="buy" id="addItem">Добавить товар</button>
   <div class="bar" style="margin-top:16px"><span id="acount"></span></div>
+  <div class="bar"><span>Статистика: уникальные покупатели</span>
+    <select id="asort" aria-label="Сортировка товаров в админке"><option value="new">Сначала новые</option><option value="views">По просмотрам</option><option value="favs">По избранному</option></select></div>
   <div id="alist"></div>
 </section>
 
@@ -509,6 +453,14 @@ function title(i){const w=String(i.model||"").trim().split(/\s+/).filter(Boolean
  let type=t.join(" ")||CAT_EN[i.cat]||i.cat||"";type=type?type[0].toUpperCase()+type.slice(1):"";
  return{name,type}}
 
+// Цена; если её снизили — новая цена, перечёркнутая старая и процент скидки
+const dropped=i=>i.status!=="sold"&&i.old_price>i.price;
+function priceHtml(i,inSheet){
+ if(!dropped(i))return inSheet?`<b>${fmt(i.price)}</b>`:`<div class="price">${fmt(i.price)}</div>`;
+ const pct=Math.round((1-i.price/i.old_price)*100);
+ const h=`<span class="pnew">${fmt(i.price)}</span><s>${fmt(i.old_price)}</s><span class="pct">−${pct}%</span>`;
+ return inSheet?`<b class="pdrop">${h}</b>`:`<div class="price pdrop">${h}</div>`}
+
 // одна метка на карточке: Продано / В пути / NEW
 const badge=i=>i.status==="sold"?"Продано":i.status==="transit"?"В пути":isNew(i)?"NEW":"";
 const HEART=`<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>`;
@@ -518,7 +470,7 @@ function card(i){const b=badge(i),on=favs.has(i.id);return `
   ${b?`<span class="st ${b==="NEW"?"isnew":""}">${b}</span>`:""}
   <button class="fav ${on?"on":""}" data-fav="${i.id}" aria-label="${on?"Убрать из избранного":"В избранное"}" aria-pressed="${on}">${HEART}</button></div>
   <div class="info"><div class="brand">${esc(title(i).type)}</div><div class="name">${esc(title(i).name)}</div>
-  <div class="meta">${esc(i.size)} · ${esc(i.cond)}</div><div class="price">${fmt(i.price)}</div></div>
+  <div class="meta">${esc(i.size)} · ${esc(i.cond)}</div>${priceHtml(i)}</div>
  </article>`}
 const order=(l,s)=>l.sort((a,b)=>(a.status==="sold")-(b.status==="sold")||(s==="asc"?a.price-b.price:s==="desc"?b.price-a.price:b.id-a.id));
 const word=n=>{const m=n%10,d=n%100;return m===1&&d!==11?"товар":m>=2&&m<=4&&(d<12||d>14)?"товара":"товаров"};
@@ -529,6 +481,7 @@ function render(){
  const bn=brand&&(ITEMS.find(i=>bkey(i.brand)===brand)||{brand}).brand.trim();
  const fl=[bn,size&&size.v].filter(Boolean);
  $("count").innerHTML=esc(l.length+" "+word(l.length))+(fl.length?` <button class="pill" data-clearf aria-label="Сбросить фильтры">${esc(fl.join(", "))} ×</button>`:"");
+ $("bfol").innerHTML=bn&&cat!=="Продано"?followHtml(bn):"";
  $("grid").innerHTML=l.length?l.map(card).join(""):`<div class="empty">Здесь пока ничего нет. Попробуйте другую категорию или запрос.${(size||cat!=="Все")&&cat!=="Продано"?`<button class="buy ghost" data-notify>Уведомить о поступлении</button>`:""}</div>`}
 function renderFavs(){
  const l=order(ITEMS.filter(i=>favs.has(i.id)),"new");
@@ -538,6 +491,7 @@ document.body.addEventListener("click",e=>{const g=e.target.closest("[data-tab-g
 function grids(e){
  const f=e.target.closest("[data-fav]");
  if(f){e.stopPropagation();const id=+f.dataset.fav;favs.has(id)?favs.delete(id):favs.add(id);saveFavs();updFavN();render();if(!$("v-favs").hidden)renderFavs();
+  track("fav",id,favs.has(id));
   try{tg&&tg.HapticFeedback&&tg.HapticFeedback.impactOccurred("light")}catch(x){}return}
  const t=e.target.closest(".tag");if(t)open(+t.dataset.id)}
 $("grid").onclick=grids;$("fgrid").onclick=grids;
@@ -545,7 +499,7 @@ const key=e=>{if(e.key==="Enter"&&e.target.classList.contains("tag"))open(+e.tar
 $("grid").onkeydown=key;$("fgrid").onkeydown=key;
 
 const sheet=$("sheet");
-function open(id){const i=ITEMS.find(x=>x.id===id);if(!i)return;const sold=i.status==="sold";
+function open(id){const i=ITEMS.find(x=>x.id===id);if(!i)return;const sold=i.status==="sold";track("view",i.id);
  const msg=`Здравствуйте! Хочу приобрести: ${i.brand} ${i.model}, размер ${i.size}, ${fmt(i.price)}`;
  LINKS.share="https://t.me/share/url?url="+encodeURIComponent(`https://t.me/${BOT}?startapp=item_${i.id}`)+"&text="+encodeURIComponent(i.brand+" "+i.model+", "+i.size+", "+fmt(i.price));
  LINKS.hold=`https://t.me/${SELLER}?text=${encodeURIComponent("Здравствуйте! Хочу забронировать ("+fmt(RESERVE)+"): "+i.brand+" "+i.model+", размер "+i.size)}`;
@@ -553,11 +507,12 @@ function open(id){const i=ITEMS.find(x=>x.id===id);if(!i)return;const sold=i.sta
  sheet.innerHTML=`<button class="close" aria-label="Закрыть">×</button>
   ${galHtml(i.photos)}
   <div class="brand">${esc(title(i).type)}</div><h2>${esc(title(i).name)}</h2>
-  <dl><dt>Размер</dt><dd>${esc(i.size||"—")}</dd><dt>Состояние</dt><dd>${esc(i.cond||"—")}</dd>${LABEL[i.status]?`<dt>Статус</dt><dd>${LABEL[i.status]}</dd>`:""}<dt>Категория</dt><dd>${esc(i.cat)}</dd><dt>Цена</dt><dd><b>${fmt(i.price)}</b></dd></dl>
+  <dl><dt>Размер</dt><dd>${esc(i.size||"—")}</dd><dt>Состояние</dt><dd>${esc(i.cond||"—")}</dd>${LABEL[i.status]?`<dt>Статус</dt><dd>${LABEL[i.status]}</dd>`:""}<dt>Категория</dt><dd>${esc(i.cat)}</dd><dt>Цена</dt><dd>${priceHtml(i,true)}</dd></dl>
   ${sold?`<a class="buy" aria-disabled="true">Продано</a><div class="btn2 one"><a class="buy ghost" data-go="share">Поделиться</a></div>`
    :`<a class="buy" data-go="item">Написать продавцу</a>
   <div class="btn2"><a class="buy ghost" data-go="hold">Забронировать</a><a class="buy ghost" data-go="share">Поделиться</a></div>
   <details class="how"><summary>Как работает бронь?</summary><p>Вы вносите предоплату ${fmt(RESERVE)}, и товар закрепляется за вами. Срок внесения остатка согласовываем индивидуально, отправка после полной оплаты.</p></details>`}
+  ${followHtml(i.brand)}
   ${similarHtml(i)}`;
  sheet.querySelector(".close").onclick=()=>sheet.close();
  if(!sheet.open)sheet.showModal();sheet.scrollTop=0;bindGal(sheet,i.photos.map(photoUrl))}
@@ -656,6 +611,30 @@ document.body.addEventListener("click",async e=>{const n=e.target.closest("[data
    body:JSON.stringify({action:"subscribe",cat:CATS.includes(cat)?cat:null,size:size?String(size.v):null})});
   if(!r.ok)throw 0;n.textContent="Запрос сохранён. Бот сообщит о поступлении"}
  catch(x){n.disabled=false;n.textContent="Не удалось сохранить. Попробуйте ещё раз"}});
+// ---------- статистика (просмотры и избранное; только в Telegram, свои действия админа не считаются) ----------
+function track(kind,id,on){if(!tg||!tg.initData||(me&&me.id===ADMIN_ID))return;
+ fetch(API,{method:"POST",headers:{"content-type":"application/json","x-init-data":tg.initData},body:JSON.stringify({action:"track",kind,id,on})}).catch(()=>{})}
+
+// ---------- «Следить за брендом»: бот напишет, когда появится новый товар этого бренда ----------
+let myBrands=new Set();
+async function loadMyBrands(){if(!tg||!tg.initData)return;
+ try{const d=await api({action:"my_brands"});myBrands=new Set(d.brands.map(bkey));document.querySelectorAll("[data-follow]").forEach(drawFollow)}catch(e){}}
+const BELL=`<svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15L6 16z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>`;
+function followHtml(name){name=String(name||"").trim();if(!name)return "";
+ return `<button class="follow ${myBrands.has(bkey(name))?"on":""}" data-follow="${esc(name)}">${followInner(name)}</button>`}
+const followInner=name=>myBrands.has(bkey(name))?`${BELL}<span>Вы следите за <b>${esc(name)}</b></span><small>Отписаться</small>`:`${BELL}<span>Сообщать о новых <b>${esc(name)}</b></span>`;
+function drawFollow(b){b.innerHTML=followInner(b.dataset.follow);b.classList.toggle("on",myBrands.has(bkey(b.dataset.follow)))}
+document.body.addEventListener("click",async e=>{const b=e.target.closest("[data-follow]");if(!b||b.disabled)return;
+ const name=b.dataset.follow,on=myBrands.has(bkey(name));
+ if(!tg||!tg.initData){b.querySelector("span").textContent="Откройте магазин в Telegram, чтобы получать уведомления";return}
+ b.disabled=true;
+ try{if(!on&&tg.requestWriteAccess)await new Promise(r=>tg.requestWriteAccess(r));
+  await api(on?{action:"unsubscribe_brand",brand:name}:{action:"subscribe",brand:name});
+  on?myBrands.delete(bkey(name)):myBrands.add(bkey(name));
+  try{tg.HapticFeedback&&tg.HapticFeedback.notificationOccurred("success")}catch(x){}}
+ catch(x){alertMsg("Не удалось сохранить. Попробуйте ещё раз")}
+ b.disabled=false;document.querySelectorAll("[data-follow]").forEach(x=>{if(bkey(x.dataset.follow)===bkey(name))drawFollow(x)})});
+
 const CL=["XS","S","M","L","XL"],SH=Array.from({length:11},(_,k)=>36+k);
 const sizeOk=i=>{if(!size)return true;if(size.t==="c")return i.size===size.v;const n=parseFloat(i.size);return !isNaN(n)&&Math.abs(n-size.v)<=.5};
 // Проданные показываем только во вкладке «Продано»; в «Все» и категориях только в наличии и в пути
@@ -695,17 +674,29 @@ const me=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user;
 const isAdmin=!!(me&&me.id===ADMIN_ID&&tg.initData);
 // Админ-панель открывается из вкладки «Ещё»
 $("toAdmin").hidden=!isAdmin;
+$("asort").onchange=()=>renderAdmin();
 const STATUS_RU={stock:"В наличии",transit:"В пути",sold:"Продано"};
 async function api(body,isForm){
  const r=await fetch(API,{method:"POST",headers:isForm?{"x-init-data":tg.initData}:{"content-type":"application/json","x-init-data":tg.initData},body:isForm?body:JSON.stringify(body)});
  const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||"Ошибка");return d}
+// статистика для админа: уникальные просмотры и добавления в избранное по каждому товару
+let STATS=null,statsLoading=false;
+async function loadStats(){if(statsLoading)return;statsLoading=true;
+ try{const d=await api({action:"stats"});STATS=new Map(d.stats.map(s=>[s.item_id,s]))}catch(e){STATS=new Map()}
+ statsLoading=false;if(!$("v-admin").hidden)renderAdmin()}
+const st=i=>(STATS&&STATS.get(i.id))||{views:0,favs:0};
 function renderAdmin(){
- const l=[...ITEMS].sort((a,b)=>(a.status==="sold")-(b.status==="sold")||b.id-a.id);
+ if(STATS===null)loadStats();
+ const srt=$("asort").value;
+ const l=[...ITEMS].sort((a,b)=>(a.status==="sold")-(b.status==="sold")||
+  (srt==="views"?st(b).views-st(a).views:srt==="favs"?st(b).favs-st(a).favs:0)||b.id-a.id);
  const act=l.filter(i=>i.status!=="sold").length,sold=l.length-act;
- $("acount").textContent=`В продаже: ${act} ${word(act)} · Продано: ${sold}`;
+ const tv=l.reduce((s,i)=>s+st(i).views,0),tf=l.reduce((s,i)=>s+st(i).favs,0);
+ $("acount").textContent=`В продаже: ${act} ${word(act)} · Продано: ${sold}`+(STATS?` · Просмотров: ${tv} · В избранном: ${tf}`:"");
  $("alist").innerHTML=l.map(i=>`<div class="arow" data-aid="${i.id}">
   ${i.photos[0]?`<img src="${esc(photoUrl(i.photos[0]))}" alt="" loading="lazy">`:`<div class="ph">${esc((i.brand||"?")[0])}</div>`}
-  <div><b>${esc(i.brand)} ${esc(i.model)}</b><small>${esc(i.size||"—")} · ${fmt(i.price)} · ${esc(i.cat)}</small></div>
+  <div><b>${esc(i.brand)} ${esc(i.model)}</b><small>${esc(i.size||"—")} · ${fmt(i.price)}${dropped(i)?` (было ${fmt(i.old_price)})`:""} · ${esc(i.cat)}</small>
+  <small class="astat">Просмотры: ${st(i).views} · В избранном: ${st(i).favs}</small></div>
   <div class="abtns"><select data-st aria-label="Статус">${Object.entries(STATUS_RU).map(([k,v])=>`<option value="${k}" ${k===i.status?"selected":""}>${v}</option>`).join("")}</select>
   <button data-edit>Изменить</button><button class="del" data-del>Удалить</button></div></div>`).join("")||`<p class="empty">В базе пока нет товаров. Перешлите пост из канала боту или добавьте товар вручную.</p>`}
 $("alist").addEventListener("change",async e=>{const s=e.target.closest("[data-st]");if(!s)return;const id=+s.closest("[data-aid]").dataset.aid;
@@ -792,21 +783,9 @@ $("rsync").onclick=async()=>{const b=$("rsync");b.disabled=true;b.textContent="�
  catch(x){alertMsg(x.message);b.textContent="Обновить из канала"}
  setTimeout(()=>{b.disabled=false;b.textContent="Обновить из канала"},2500)};
 
-// ---------- пробник: тёмный фон + лента отзывов на главной (только по ссылке с ?preview) ----------
-const PREVIEW=/[?&]preview\b/.test(location.search);
-// Основной стиль: 10 (чёрный с рамками). Другие варианты для сравнения: ?theme=1..10
-const THEME=(location.search.match(/[?&]theme=(10|[1-9])\b/)||[])[1];document.documentElement.dataset.t=THEME||"10";
-if(PREVIEW)document.documentElement.classList.add("dark");
-function renderStrip(){if(!PREVIEW)return;const box=$("rstrip");
- const l=REVIEWS.filter(r=>r.text&&r.author).slice(0,8);if(!l.length){box.hidden=true;return}
- box.hidden=false;
- box.innerHTML=`<div class="rsh"><b>Отзывы · ${REVIEWS.length}</b><a data-tab-go="reviews" href="#">Все →</a></div>
- <div class="rs">${l.map(r=>`<button class="rsc" data-tab-go="reviews">${r.photos[0]?`<img src="${esc(photoUrl(r.photos[0]))}" alt="" loading="lazy">`:`<span class="ph">★</span>`}
-  <div><b>${esc(r.author||"Покупатель")}</b><span>${esc(r.text||"Фото-отзыв")}</span></div></button>`).join("")}</div>`}
-if(PREVIEW)loadReviews().then(renderStrip);
-
 // ---------- старт ----------
 render();
+loadMyBrands();
 load().then(()=>{const sp=(tg&&tg.initDataUnsafe&&tg.initDataUnsafe.start_param)||"";
  const m=sp.match(/^item_(\d+)$/)||location.hash.match(/item=(\d+)/);if(m)open(+m[1])});
 </script>
