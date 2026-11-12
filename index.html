@@ -242,6 +242,18 @@ dialog .buy{margin-top:6px}
 @keyframes vin{from{opacity:0;scale:.9}to{opacity:1;scale:1}}
 .vbar{background:none}
 
+/* ===== v3: тёмный техно / минимал-люкс. Шапку (аватар + название) не трогаем ===== */
+.tag,.panel{background:linear-gradient(160deg,#1c1c22d9,#0c0c0fec)}
+.buy{background:linear-gradient(180deg,#2e2f36,#141418);color:#fff;border:1px solid #ffffff40;box-shadow:inset 0 1px 0 #ffffff26,0 8px 22px #000b}
+.buy:active{background:#141418}
+.buy.ghost{background:#ffffff0a;border:1px solid #ffffff26;box-shadow:none}
+.buy[aria-disabled=true]{background:#17171b;color:#ffffff66;border-color:#ffffff1a;box-shadow:none}
+.chip[aria-pressed=true],.nav button[aria-current=page]{background:linear-gradient(180deg,#36373f,#1d1d23);color:#fff;border-color:#ffffff59;box-shadow:inset 0 1px 0 #ffffff2e}
+.search,.chip,.fbtn{background:#0e0e12b8}
+.nav{background:#0b0b0ee6}
+.fbtn.on::after{background:#fff;border-color:#15151a}
+.name{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
 /* ===== пробник (только по ссылке ?preview): тёмный фон и лента отзывов ===== */
 html.dark body::before{background:
  radial-gradient(90% 55% at 50% -8%,#3a3f52 0%,#1d1f29 45%,transparent 75%),
@@ -434,6 +446,19 @@ $("count").onclick=e=>{if(e.target.closest("[data-clearf]")){size=null;brand=nul
 function pic(i){const h=[...i.brand].reduce((a,c)=>a+c.charCodeAt(0),0)%360;
  return i.photos[0]?`<div class="pic"><img src="${esc(photoUrl(i.photos[0]))}" alt="${esc(i.brand+" "+i.model)}" loading="lazy"></div>`
  :`<div class="pic" style="background:hsl(${h} 18% 38%)">${esc((i.brand||"?")[0])}</div>`}
+// Название товара: жирно «бренд + модель» (Rick Owens Drkstar), мелко тип вещи (Shoes).
+// Тип берём из конца модели (Swarovski t-shirt -> T-shirt), иначе из категории.
+const TYPE_WORDS=new Set(("sweatshirt sweatshirts hoodie hoody zip zipper zip-hoodie t-shirt tshirt tee shirt longsleeve sweater jumper polo jacket coat puffer parka bomber vest windbreaker "+
+ "tracksuit suit set pants jeans shorts trousers joggers sweatpants cargo bag backpack wallet pouch cap hat beanie balaclava belt scarf gloves socks sunglasses glasses "+
+ "necklace ring bracelet keychain shoes sneakers sneaker boots boot slides trainers sandals loafers perfume "+
+ "свитшот худи футболка кофта зипка куртка пуховик штаны джинсы шорты сумка рюкзак кепка шапка ремень кроссовки кеды ботинки духи").split(" "));
+const CAT_EN={"Обувь":"Shoes","Худи / Футболки":"Top","Куртки":"Jacket","Костюмы":"Tracksuit","Шорты / Штаны":"Pants","Сумки":"Bag","Аксессуары":"Accessory"};
+function title(i){const w=String(i.model||"").trim().split(/\s+/).filter(Boolean),t=[];
+ while(w.length&&TYPE_WORDS.has(w[w.length-1].toLowerCase().replace(/[^\p{L}\p{N}-]/gu,"")))t.unshift(w.pop());
+ const name=[String(i.brand||"").trim(),...w].filter(Boolean).join(" ")||String(i.model||"");
+ let type=t.join(" ")||CAT_EN[i.cat]||i.cat||"";type=type?type[0].toUpperCase()+type.slice(1):"";
+ return{name,type}}
+
 // одна метка на карточке: Продано / В пути / NEW
 const badge=i=>i.status==="sold"?"Продано":i.status==="transit"?"В пути":isNew(i)?"NEW":"";
 const HEART=`<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>`;
@@ -442,7 +467,7 @@ function card(i){const b=badge(i),on=favs.has(i.id);return `
   <div class="pw">${pic(i)}
   ${b?`<span class="st ${b==="NEW"?"isnew":""}">${b}</span>`:""}
   <button class="fav ${on?"on":""}" data-fav="${i.id}" aria-label="${on?"Убрать из избранного":"В избранное"}" aria-pressed="${on}">${HEART}</button></div>
-  <div class="info"><div class="brand">${esc(i.brand)}</div><div class="name">${esc(i.model)}</div>
+  <div class="info"><div class="brand">${esc(title(i).type)}</div><div class="name">${esc(title(i).name)}</div>
   <div class="meta">${esc(i.size)} · ${esc(i.cond)}</div><div class="price">${fmt(i.price)}</div></div>
  </article>`}
 const order=(l,s)=>l.sort((a,b)=>(a.status==="sold")-(b.status==="sold")||(s==="asc"?a.price-b.price:s==="desc"?b.price-a.price:b.id-a.id));
@@ -477,7 +502,7 @@ function open(id){const i=ITEMS.find(x=>x.id===id);if(!i)return;const sold=i.sta
  LINKS.item=`https://t.me/${SELLER}?text=${encodeURIComponent(msg)}`;
  sheet.innerHTML=`<button class="close" aria-label="Закрыть">×</button>
   ${galHtml(i.photos)}
-  <div class="brand">${esc(i.brand)}</div><h2>${esc(i.model)}</h2>
+  <div class="brand">${esc(title(i).type)}</div><h2>${esc(title(i).name)}</h2>
   <dl><dt>Размер</dt><dd>${esc(i.size||"—")}</dd><dt>Состояние</dt><dd>${esc(i.cond||"—")}</dd>${LABEL[i.status]?`<dt>Статус</dt><dd>${LABEL[i.status]}</dd>`:""}<dt>Категория</dt><dd>${esc(i.cat)}</dd><dt>Цена</dt><dd><b>${fmt(i.price)}</b></dd></dl>
   ${sold?`<a class="buy" aria-disabled="true">Продано</a><div class="btn2 one"><a class="buy ghost" data-go="share">Поделиться</a></div>`
    :`<a class="buy" data-go="item">Написать продавцу</a>
@@ -497,7 +522,7 @@ function similar(i){const sz=parseFloat(i.size),bk=(i.brand||"").trim().toLowerC
 function similarHtml(i){const l=similar(i);if(!l.length)return "";
  return `<h3 class="simh">Похожие товары</h3><div class="sim">${l.map(x=>`<button class="simc" data-sim="${x.id}">
   ${x.photos[0]?`<img src="${esc(photoUrl(x.photos[0]))}" alt="" loading="lazy">`:`<span class="ph">${esc((x.brand||"?")[0])}</span>`}
-  <span class="b">${esc(x.brand)}</span><span class="m">${esc(x.model)}</span><b>${fmt(x.price)}</b></button>`).join("")}</div>`}
+  <span class="b">${esc(title(x).type)}</span><span class="m">${esc(title(x).name)}</span><b>${fmt(x.price)}</b></button>`).join("")}</div>`}
 
 // ---------- галерея товара: стрелки, счётчик, открытие на весь экран ----------
 const ARR_L=`<svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>`,ARR_R=`<svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>`;
