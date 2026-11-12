@@ -278,6 +278,23 @@ html[data-t="3"] .buy:not(.ghost),html[data-t="3"] .chip[aria-pressed=true],html
 /* 4. Бордо */
 html[data-t="4"] .buy:not(.ghost),html[data-t="4"] .chip[aria-pressed=true],html[data-t="4"] .nav button[aria-current=page]{background:linear-gradient(180deg,#8c1d2e,#4c0c17);color:#fff;border:1px solid #b9384c;box-shadow:inset 0 1px 0 #ffffff2e}
 
+/* 5. Без карточек: плитки без рамок и подложки, как в Vinted / Grailed; белая кнопка */
+html[data-t="5"] .tag{background:none;box-shadow:none;padding:0;border-radius:0}
+html[data-t="5"] .tag::after{display:none}
+html[data-t="5"] .pic{border-radius:14px}
+html[data-t="5"] .info{padding:8px 2px 4px;text-shadow:0 1px 6px #000c}
+html[data-t="5"] .grid{gap:22px 12px}
+html[data-t="5"] .buy:not(.ghost){background:linear-gradient(180deg,#fff,#dcdee4);color:#111;box-shadow:0 6px 18px #0009}
+html[data-t="5"] .chip[aria-pressed=true],html[data-t="5"] .nav button[aria-current=page]{background:#fff;color:#111;border-color:#fff}
+/* 6. Светлые карточки-бирки с чёрным текстом; чёрная кнопка */
+html[data-t="6"] .tag{background:#f3f2ee;color:#121214;box-shadow:0 10px 26px #000a}
+html[data-t="6"] .tag::after{display:none}
+html[data-t="6"] .tag .brand,html[data-t="6"] .tag .meta{color:#6d6c68}
+html[data-t="6"] .tag .price{color:#121214}
+html[data-t="6"] .tag.sold{opacity:.75}
+html[data-t="6"] .buy:not(.ghost){background:#f3f2ee;color:#121214;box-shadow:0 6px 18px #0009}
+html[data-t="6"] .chip[aria-pressed=true],html[data-t="6"] .nav button[aria-current=page]{background:#f3f2ee;color:#121214;border-color:#f3f2ee}
+
 /* широкий экран (ПК): магазин по центру, как на телефоне */
 body{max-width:620px;margin:0 auto}
 .nav{left:50%;right:auto;transform:translateX(-50%);width:min(596px,calc(100% - 24px))}
@@ -702,8 +719,8 @@ $("rsync").onclick=async()=>{const b=$("rsync");b.disabled=true;b.textContent="�
 
 // ---------- пробник: тёмный фон + лента отзывов на главной (только по ссылке с ?preview) ----------
 const PREVIEW=/[?&]preview\b/.test(location.search);
-// варианты оформления на выбор: ?theme=1..4
-const THEME=(location.search.match(/[?&]theme=([1-4])/)||[])[1];if(THEME)document.documentElement.dataset.t=THEME;
+// варианты оформления на выбор: ?theme=1..6
+const THEME=(location.search.match(/[?&]theme=([1-6])/)||[])[1];if(THEME)document.documentElement.dataset.t=THEME;
 if(PREVIEW)document.documentElement.classList.add("dark");
 function renderStrip(){if(!PREVIEW)return;const box=$("rstrip");
  const l=REVIEWS.filter(r=>r.text&&r.author).slice(0,8);if(!l.length){box.hidden=true;return}
