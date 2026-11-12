@@ -336,6 +336,17 @@ html[data-t="9"] .buy{position:relative;background:linear-gradient(180deg,#2b2b3
 html[data-t="9"] .buy.ghost{background:#1a1a1e;box-shadow:0 0 0 1px #ffffff26}
 html[data-t="9"] .chip[aria-pressed=true],html[data-t="9"] .nav button[aria-current=page]{background:linear-gradient(180deg,#2e2e35,#1a1a1f);color:#fff;border-color:#c9ccd480;box-shadow:inset 0 1px 0 #ffffff33}
 
+/* 10. Чёрный (как 8) + чёткие рамки (как во 2), но серебристо-белые */
+html[data-t="10"] .tag,html[data-t="10"] .panel{background:#0f0f11}
+html[data-t="10"] .tag::after,html[data-t="10"] .panel::after{background:linear-gradient(145deg,#ffffff59,#ffffff14 40%,#ffffff33)}
+html[data-t="10"] .search,html[data-t="10"] .chip,html[data-t="10"] .fbtn{background:#0f0f11;border:1px solid #ffffff38;box-shadow:inset 0 1px 0 #ffffff14}
+html[data-t="10"] .nav{background:#0f0f11f5;border:1px solid #ffffff38;box-shadow:inset 0 1px 0 #ffffff1f,0 10px 30px #000c}
+html[data-t="10"] dialog{background:#0f0f11;border-top:1px solid #ffffff40}
+html[data-t="10"] .buy{background:linear-gradient(180deg,#232328,#121215);color:#fff;border:1px solid #ffffff59;box-shadow:inset 0 1px 0 #ffffff2e,0 8px 22px #000b}
+html[data-t="10"] .buy.ghost{background:#141417;border:1px solid #ffffff38;box-shadow:inset 0 1px 0 #ffffff14}
+html[data-t="10"] .how{background:#141417;border-color:#ffffff38}
+html[data-t="10"] .chip[aria-pressed=true],html[data-t="10"] .nav button[aria-current=page]{background:linear-gradient(180deg,#2a2a30,#17171b);color:#fff;border:1px solid #ffffff66;box-shadow:inset 0 1px 0 #ffffff2e}
+
 /* широкий экран (ПК): магазин по центру, как на телефоне */
 body{max-width:620px;margin:0 auto}
 .nav{left:50%;right:auto;transform:translateX(-50%);width:min(596px,calc(100% - 24px))}
@@ -773,8 +784,8 @@ $("rsync").onclick=async()=>{const b=$("rsync");b.disabled=true;b.textContent="�
 
 // ---------- пробник: тёмный фон + лента отзывов на главной (только по ссылке с ?preview) ----------
 const PREVIEW=/[?&]preview\b/.test(location.search);
-// варианты оформления на выбор: ?theme=1..9
-const THEME=(location.search.match(/[?&]theme=([1-9])/)||[])[1];if(THEME)document.documentElement.dataset.t=THEME;
+// варианты оформления на выбор: ?theme=1..10
+const THEME=(location.search.match(/[?&]theme=(10|[1-9])\b/)||[])[1];if(THEME)document.documentElement.dataset.t=THEME;
 if(PREVIEW)document.documentElement.classList.add("dark");
 function renderStrip(){if(!PREVIEW)return;const box=$("rstrip");
  const l=REVIEWS.filter(r=>r.text&&r.author).slice(0,8);if(!l.length){box.hidden=true;return}
