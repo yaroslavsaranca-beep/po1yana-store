@@ -346,7 +346,8 @@ document.body.addEventListener("click",async e=>{const n=e.target.closest("[data
  catch(x){n.disabled=false;n.textContent="Не удалось сохранить. Попробуйте ещё раз"}});
 const CL=["XS","S","M","L","XL"],SH=Array.from({length:11},(_,k)=>36+k);
 const sizeOk=i=>{if(!size)return true;if(size.t==="c")return i.size===size.v;const n=parseFloat(i.size);return !isNaN(n)&&Math.abs(n-size.v)<=.5};
-const catOk=i=>cat==="Все"||(cat==="Продано"?i.status==="sold":i.cat===cat);
+// Проданные показываем только во вкладке «Продано»; в «Все» и категориях только в наличии и в пути
+const catOk=i=>cat==="Продано"?i.status==="sold":i.status!=="sold"&&(cat==="Все"||i.cat===cat);
 const cnt=()=>ITEMS.filter(i=>catOk(i)&&sizeOk(i)&&(i.brand+" "+i.model).toLowerCase().includes($("q").value.trim().toLowerCase())).length;
 const fs=$("fsheet");
 function drawF(){
