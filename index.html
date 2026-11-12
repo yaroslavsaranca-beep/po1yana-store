@@ -191,6 +191,8 @@ header.top{display:flex;align-items:center;gap:11px}
 .tag .st{top:8px;left:8px;padding:4px 9px;font-size:11px;letter-spacing:.02em;background:#15151acc;color:#fff;border:1px solid #ffffff33;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .tag .st.isnew{background:linear-gradient(180deg,#fff,#c9ccd4);color:#15151a;border-color:#fff}
 .tag.sold .st{background:#15151acc}
+/* «В пути» — яркая синяя метка, как было изначально */
+.tag .st.transit{background:#2a45ff;color:#fff;border-color:#2a45ff}
 .tag .fav{top:auto;bottom:8px;right:8px;width:34px;height:34px;display:grid;place-items:center;padding:0;background:#15151a8c;border:1px solid #ffffff40;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .fav svg{width:17px;height:17px;fill:none;stroke:#fff;stroke-width:2;stroke-linejoin:round}
 .fav.on svg{fill:#ff5470;stroke:#ff5470}
@@ -470,7 +472,7 @@ const HEART=`<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.
 function card(i){const b=badge(i),on=favs.has(i.id);return `
  <article class="tag ${i.status==="sold"?"sold":""}" data-id="${i.id}" tabindex="0" role="button" aria-label="${esc(i.brand+" "+i.model)}">
   <div class="pw">${pic(i)}
-  ${b?`<span class="st ${b==="NEW"?"isnew":""}">${b}</span>`:""}
+  ${b?`<span class="st ${b==="NEW"?"isnew":i.status==="transit"?"transit":""}">${b}</span>`:""}
   <button class="fav ${on?"on":""}" data-fav="${i.id}" aria-label="${on?"Убрать из избранного":"В избранное"}" aria-pressed="${on}">${HEART}</button></div>
   <div class="info"><div class="brand">${esc(title(i).type)}</div><div class="name">${esc(title(i).name)}</div>
   <div class="meta">${esc(i.size)} · ${esc(i.cond)}</div>${priceHtml(i)}</div>
