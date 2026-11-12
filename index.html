@@ -347,6 +347,15 @@ html[data-t="10"] .buy{background:linear-gradient(180deg,#232328,#121215);color:
 html[data-t="10"] .buy.ghost{background:#141417;border:1px solid #ffffff38;box-shadow:inset 0 1px 0 #ffffff14}
 html[data-t="10"] .how{background:#141417;border-color:#ffffff38}
 html[data-t="10"] .chip[aria-pressed=true],html[data-t="10"] .nav button[aria-current=page]{background:linear-gradient(180deg,#2a2a30,#17171b);color:#fff;border:1px solid #ffffff66;box-shadow:inset 0 1px 0 #ffffff2e}
+/* 10: рамки толще и ярче, чтобы в Telegram (масштаб 100%) были чётко видны */
+html[data-t="10"] .tag::after{padding:2px;background:linear-gradient(145deg,#ffffffe6,#ffffffa6 45%,#ffffffd9)}
+html[data-t="10"] .panel::after{padding:1.5px;background:linear-gradient(145deg,#ffffffb3,#ffffff59 45%,#ffffff99)}
+html[data-t="10"] .search{border:1.5px solid #ffffff66}
+html[data-t="10"] .chip,html[data-t="10"] .fbtn{border:1.5px solid #ffffff80}
+html[data-t="10"] .chip[aria-pressed=true]{border:1.5px solid #ffffffcc}
+html[data-t="10"] .nav{border:1.5px solid #ffffff4d}
+html[data-t="10"] .buy{border:1.5px solid #ffffffa6}
+html[data-t="10"] .buy.ghost,html[data-t="10"] .how{border:1.5px solid #ffffff66}
 
 /* широкий экран (ПК): магазин по центру, как на телефоне */
 body{max-width:620px;margin:0 auto}
