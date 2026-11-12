@@ -260,13 +260,17 @@ dialog .buy{margin-top:6px}
 .pdrop .pnew{color:#ff6b6b}
 .pdrop s{color:#ffffff73;font-weight:400;font-size:13px}
 .pdrop .pct{padding:1px 6px;border-radius:6px;background:#ff6b6b26;color:#ff8a8a;font:600 11px var(--body)}
-.follow{display:flex;align-items:center;gap:9px;width:100%;margin:10px 0 2px;padding:11px 13px;border-radius:12px;border:1.5px solid #ffffff59;background:#141417;color:#fff;font:500 14px var(--body);text-align:left;cursor:pointer}
-.follow svg{flex:none;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
-.follow span{flex:1}
-.follow small{color:#ffffff80;font-size:12px}
-.follow.on{border-color:#ffffffb3}
-.follow.on svg{fill:#fff}
-#bfol .follow{margin:-4px 0 14px}
+/* лайки брендов и размеров в «Фильтрах» */
+.fchip{display:inline-flex;align-items:center}
+.like{flex:none;width:28px;height:28px;margin-left:-4px;padding:0;border:0;border-radius:50%;background:transparent;color:#ffffff59;display:grid;place-items:center;cursor:pointer;transition:opacity .15s,color .15s,transform .15s}
+.like svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round}
+.like.on{color:#ff5470}.like.on svg{fill:#ff5470}
+.like:active{transform:scale(.85)}
+.like:disabled{opacity:.4}
+/* на ПК с мышкой сердечко появляется при наведении (лайкнутые видны всегда) */
+@media (hover:hover) and (pointer:fine){.fchip .like:not(.on){opacity:0}.fchip:hover .like{opacity:1}.like:hover{color:#fff}}
+.likehint{display:flex;align-items:center;gap:8px;margin:2px 0 4px;color:#ffffffa6;font-size:13px}
+.likehint svg{flex:none;width:15px;height:15px;fill:#ff5470;stroke:none}
 .arow small{display:block}
 .astat{color:#ffffffcc!important;margin-top:2px}
 
@@ -318,7 +322,6 @@ body{max-width:620px;margin:0 auto}
   <div class="bar"><span id="count"></span>
     <select id="sort" aria-label="Сортировка"><option value="new">Сначала новые</option><option value="asc">Дешевле</option><option value="desc">Дороже</option></select>
   </div>
-  <div id="bfol"></div>
   <main class="grid" id="grid"></main>
 </section>
 
@@ -480,9 +483,7 @@ function render(){
  const l=order(visible(),$("sort").value);
  const bn=brand&&(ITEMS.find(i=>bkey(i.brand)===brand)||{brand}).brand.trim();
  const fl=[bn,size&&size.v].filter(Boolean);
- $("count").innerHTML=esc(l.length+" "+word(l.length))+(fl.length?` <button class="pill" data-clearf aria-label="Сбросить фильтры">${esc(fl.join(", "))} ×</button>`:"");
- $("bfol").innerHTML=bn&&cat!=="Продано"?followHtml(bn):"";
- $("grid").innerHTML=l.length?l.map(card).join(""):`<div class="empty">Здесь пока ничего нет. Попробуйте другую категорию или запрос.${(size||cat!=="Все")&&cat!=="Продано"?`<button class="buy ghost" data-notify>Уведомить о поступлении</button>`:""}</div>`}
+ $("count").innerHTML=esc(l.length+" "+word(l.length))+(fl.length?` <button class="pill" data-clearf aria-label="Сбросить фильтры">${esc(fl.join(", "))} ×</button>`:""); $("grid").innerHTML=l.length?l.map(card).join(""):`<div class="empty">Здесь пока ничего нет. Попробуйте другую категорию или запрос.${(size||cat!=="Все")&&cat!=="Продано"?`<button class="buy ghost" data-notify>Уведомить о поступлении</button>`:""}</div>`}
 function renderFavs(){
  const l=order(ITEMS.filter(i=>favs.has(i.id)),"new");
  $("fgrid").innerHTML=l.length?l.map(card).join(""):`<div class="empty">Пока пусто. Нажмите на сердечко у товара, и он появится здесь.<button class="buy" data-tab-go="catalog">К каталогу</button></div>`}
@@ -512,7 +513,6 @@ function open(id){const i=ITEMS.find(x=>x.id===id);if(!i)return;const sold=i.sta
    :`<a class="buy" data-go="item">Написать продавцу</a>
   <div class="btn2"><a class="buy ghost" data-go="hold">Забронировать</a><a class="buy ghost" data-go="share">Поделиться</a></div>
   <details class="how"><summary>Как работает бронь?</summary><p>Вы вносите предоплату ${fmt(RESERVE)}, и товар закрепляется за вами. Срок внесения остатка согласовываем индивидуально, отправка после полной оплаты.</p></details>`}
-  ${followHtml(i.brand)}
   ${similarHtml(i)}`;
  sheet.querySelector(".close").onclick=()=>sheet.close();
  if(!sheet.open)sheet.showModal();sheet.scrollTop=0;bindGal(sheet,i.photos.map(photoUrl))}
@@ -615,25 +615,25 @@ document.body.addEventListener("click",async e=>{const n=e.target.closest("[data
 function track(kind,id,on){if(!tg||!tg.initData||(me&&me.id===ADMIN_ID))return;
  fetch(API,{method:"POST",headers:{"content-type":"application/json","x-init-data":tg.initData},body:JSON.stringify({action:"track",kind,id,on})}).catch(()=>{})}
 
-// ---------- «Следить за брендом»: бот напишет, когда появится новый товар этого бренда ----------
-let myBrands=new Set();
-async function loadMyBrands(){if(!tg||!tg.initData)return;
- try{const d=await api({action:"my_brands"});myBrands=new Set(d.brands.map(bkey));document.querySelectorAll("[data-follow]").forEach(drawFollow)}catch(e){}}
-const BELL=`<svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15L6 16z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>`;
-function followHtml(name){name=String(name||"").trim();if(!name)return "";
- return `<button class="follow ${myBrands.has(bkey(name))?"on":""}" data-follow="${esc(name)}">${followInner(name)}</button>`}
-const followInner=name=>myBrands.has(bkey(name))?`${BELL}<span>Вы следите за <b>${esc(name)}</b></span><small>Отписаться</small>`:`${BELL}<span>Сообщать о новых <b>${esc(name)}</b></span>`;
-function drawFollow(b){b.innerHTML=followInner(b.dataset.follow);b.classList.toggle("on",myBrands.has(bkey(b.dataset.follow)))}
-document.body.addEventListener("click",async e=>{const b=e.target.closest("[data-follow]");if(!b||b.disabled)return;
- const name=b.dataset.follow,on=myBrands.has(bkey(name));
- if(!tg||!tg.initData){b.querySelector("span").textContent="Откройте магазин в Telegram, чтобы получать уведомления";return}
- b.disabled=true;
+// ---------- лайки в «Фильтрах»: бренд или размер -> бот напишет, когда появится такая вещь ----------
+const LIKES={b:new Set(),s:new Set()};// b — бренды (нижний регистр), s — размеры (M, 42…)
+const likeKey=(t,v)=>t==="b"?bkey(v):String(v).toUpperCase();
+const liked=(t,v)=>LIKES[t==="b"?"b":"s"].has(likeKey(t,v));
+async function loadMyLikes(){if(!tg||!tg.initData)return;
+ try{const d=await api({action:"my_subs"});LIKES.b=new Set(d.brands.map(bkey));LIKES.s=new Set(d.sizes.map(x=>String(x).toUpperCase()));if(fs.open)drawF()}catch(e){}}
+const LHEART=`<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>`;
+// t: "b" — бренд, "c"/"s" — размер одежды/обуви; v — значение; label — что показать в подсказке
+const likeBtn=(t,v,label)=>{const on=liked(t,v);
+ return `<button class="like ${on?"on":""}" data-like="${t}" data-lv="${esc(v)}" aria-pressed="${on}" aria-label="${on?"Не сообщать":"Сообщать о новых"}: ${esc(label)}">${LHEART}</button>`};
+async function toggleLike(t,v){
+ if(!tg||!tg.initData){alertMsg("Откройте магазин в Telegram, чтобы бот мог прислать сообщение");return}
+ const on=liked(t,v),set=LIKES[t==="b"?"b":"s"],k=likeKey(t,v),body=t==="b"?{brand:v}:{size:String(v)};
  try{if(!on&&tg.requestWriteAccess)await new Promise(r=>tg.requestWriteAccess(r));
-  await api(on?{action:"unsubscribe_brand",brand:name}:{action:"subscribe",brand:name});
-  on?myBrands.delete(bkey(name)):myBrands.add(bkey(name));
+  await api({action:on?"unsubscribe":"subscribe",...body});
+  on?set.delete(k):set.add(k);
   try{tg.HapticFeedback&&tg.HapticFeedback.notificationOccurred("success")}catch(x){}}
  catch(x){alertMsg("Не удалось сохранить. Попробуйте ещё раз")}
- b.disabled=false;document.querySelectorAll("[data-follow]").forEach(x=>{if(bkey(x.dataset.follow)===bkey(name))drawFollow(x)})});
+ drawF()}
 
 const CL=["XS","S","M","L","XL"],SH=Array.from({length:11},(_,k)=>36+k);
 const sizeOk=i=>{if(!size)return true;if(size.t==="c")return i.size===size.v;const n=parseFloat(i.size);return !isNaN(n)&&Math.abs(n-size.v)<=.5};
@@ -652,16 +652,18 @@ const visible=()=>{const q=$("q").value.trim().toLowerCase();return ITEMS.filter
 const cnt=()=>visible().length;
 const fs=$("fsheet");
 function drawF(){
- const b=(t,v)=>`<button class="chip sm" data-t="${t}" data-v="${v}" aria-pressed="${!!size&&size.t===t&&size.v==v}">${v}</button>`;
+ const b=(t,v)=>`<span class="fchip"><button class="chip sm" data-t="${t}" data-v="${v}" aria-pressed="${!!size&&size.t===t&&size.v==v}">${v}</button>${likeBtn(t,v,"размер "+v)}</span>`;
  const bl=brandList();
  fs.innerHTML=`<button class="close" aria-label="Закрыть">×</button><h2>Фильтры</h2>
- <h3>Бренд</h3><div class="szrow brands">${bl.map(o=>`<button class="chip sm" data-t="b" data-v="${esc(o.k)}" aria-pressed="${brand===o.k}">${esc(o.name)}${o.n?` <small>${o.n}</small>`:""}</button>`).join("")||`<span class="note">Бренды появятся, когда в каталоге будут товары</span>`}</div>
+ <p class="likehint">${LHEART}<span>Лайкни бренд или размер, и бот напишет, когда появится такая вещь</span></p>
+ <h3>Бренд</h3><div class="szrow brands">${bl.map(o=>`<span class="fchip"><button class="chip sm" data-t="b" data-v="${esc(o.k)}" aria-pressed="${brand===o.k}">${esc(o.name)}${o.n?` <small>${o.n}</small>`:""}</button>${likeBtn("b",o.name,o.name)}</span>`).join("")||`<span class="note">Бренды появятся, когда в каталоге будут товары</span>`}</div>
  <h3>Размер одежды</h3><div class="szrow">${CL.map(v=>b("c",v)).join("")}</div>
  <h3>Размер обуви</h3><div class="szrow">${SH.map(v=>b("s",v)).join("")}</div>
  <div class="fa"><button class="buy ghost" data-reset>Сбросить</button><button class="buy" data-apply>Показать (${cnt()})</button></div>`;
  $("fbtn").classList.toggle("on",!!(size||brand))}
 $("fbtn").onclick=()=>{drawF();fs.showModal()};
 fs.onclick=e=>{
+ const lk=e.target.closest("[data-like]");if(lk){e.stopPropagation();lk.disabled=true;toggleLike(lk.dataset.like,lk.dataset.lv);return}
  if(e.target===fs||e.target.closest(".close")||e.target.closest("[data-apply]"))return fs.close();
  if(e.target.closest("[data-reset]")){size=null;brand=null}
  const c=e.target.closest(".chip");
@@ -785,7 +787,7 @@ $("rsync").onclick=async()=>{const b=$("rsync");b.disabled=true;b.textContent="�
 
 // ---------- старт ----------
 render();
-loadMyBrands();
+loadMyLikes();
 load().then(()=>{const sp=(tg&&tg.initDataUnsafe&&tg.initDataUnsafe.start_param)||"";
  const m=sp.match(/^item_(\d+)$/)||location.hash.match(/item=(\d+)/);if(m)open(+m[1])});
 </script>
