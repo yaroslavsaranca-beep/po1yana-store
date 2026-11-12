@@ -652,7 +652,11 @@ function brandList(){const m=new Map();
  ITEMS.filter(i=>(cat==="Продано"?i.status==="sold":i.status!=="sold")&&bkey(i.brand)).forEach(i=>{const k=bkey(i.brand);const o=m.get(k)||{k,name:i.brand.trim(),n:0};o.n++;m.set(k,o)});
  if(brand&&!m.has(brand))m.set(brand,{k:brand,name:brand,n:0});
  return [...m.values()].sort((a,b)=>b.n-a.n||a.name.localeCompare(b.name))}
-const visible=()=>{const q=$("q").value.trim().toLowerCase();return ITEMS.filter(i=>catOk(i)&&sizeOk(i)&&brandOk(i)&&(i.brand+" "+i.model).toLowerCase().includes(q))};
+// Search: every typed word must be the START of a word in brand/model ("lan" finds Lanvin, not "Atlantic")
+const words=s=>String(s||"").toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+const qOk=(i,qw)=>{if(!qw.length)return true;const w=words(i.brand+" "+i.model),joined=words(i.brand).join("");
+ return qw.every(t=>w.some(x=>x.startsWith(t))||joined.startsWith(t))};
+const visible=()=>{const qw=words($("q").value);return ITEMS.filter(i=>catOk(i)&&sizeOk(i)&&brandOk(i)&&qOk(i,qw))};
 const cnt=()=>visible().length;
 const fs=$("fsheet");
 function drawF(){
