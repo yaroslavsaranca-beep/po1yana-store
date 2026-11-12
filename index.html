@@ -373,8 +373,9 @@ async function api(body,isForm){
  const r=await fetch(API,{method:"POST",headers:isForm?{"x-init-data":tg.initData}:{"content-type":"application/json","x-init-data":tg.initData},body:isForm?body:JSON.stringify(body)});
  const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||"Ошибка");return d}
 function renderAdmin(){
- const l=[...ITEMS].sort((a,b)=>b.id-a.id);
- $("acount").textContent=l.length+" "+word(l.length)+" в базе";
+ const l=[...ITEMS].sort((a,b)=>(a.status==="sold")-(b.status==="sold")||b.id-a.id);
+ const act=l.filter(i=>i.status!=="sold").length,sold=l.length-act;
+ $("acount").textContent=`В продаже: ${act} ${word(act)} · Продано: ${sold}`;
  $("alist").innerHTML=l.map(i=>`<div class="arow" data-aid="${i.id}">
   ${i.photos[0]?`<img src="${esc(photoUrl(i.photos[0]))}" alt="" loading="lazy">`:`<div class="ph">${esc((i.brand||"?")[0])}</div>`}
   <div><b>${esc(i.brand)} ${esc(i.model)}</b><small>${esc(i.size||"—")} · ${fmt(i.price)} · ${esc(i.cat)}</small></div>
