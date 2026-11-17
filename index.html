@@ -796,6 +796,8 @@ $("rsync").onclick=async()=>{const b=$("rsync");b.disabled=true;b.textContent="�
 // ---------- старт ----------
 render();
 loadMyLikes();
+// Сверка статусов с постами канала (#stock -> #sold) идёт на сервере в фоне
+if(tg&&tg.initData)api({action:"sync_items"}).catch(()=>{});
 load().then(()=>{const sp=(tg&&tg.initDataUnsafe&&tg.initDataUnsafe.start_param)||"";
  const m=sp.match(/^item_(\d+)$/)||location.hash.match(/item=(\d+)/);if(m)open(+m[1])});
 </script>
