@@ -440,7 +440,7 @@ function tab(name){
 $("nav").onclick=e=>{const b=e.target.closest("button");if(b)tab(b.dataset.tab)};
 
 const chips=$("chips");
-chips.innerHTML=["Все",...CATS,"Под заказ","Продано"].map(c=>`<button class="chip" aria-pressed="${c===cat}">${esc(c)}</button>`).join("");
+chips.innerHTML=["Все",...CATS,"Продано"].map(c=>`<button class="chip" aria-pressed="${c===cat}">${esc(c)}</button>`).join("");
 chips.onclick=e=>{const b=e.target.closest(".chip");if(!b)return;cat=b.textContent;
  [...chips.children].forEach(x=>x.setAttribute("aria-pressed",x===b));render()};
 $("q").oninput=render;$("sort").onchange=render;
@@ -489,7 +489,7 @@ function render(){
  const l=order(visible(),$("sort").value);
  const bn=brand&&(ITEMS.find(i=>bkey(i.brand)===brand)||{brand}).brand.trim();
  const fl=[bn,size&&size.v].filter(Boolean);
- $("count").innerHTML=esc(l.length+" "+word(l.length))+(fl.length?` <button class="pill" data-clearf aria-label="Сбросить фильтры">${esc(fl.join(", "))} ×</button>`:""); $("grid").innerHTML=l.length?l.map(card).join(""):`<div class="empty">Здесь пока ничего нет. Попробуйте другую категорию или запрос.${(size||cat!=="Все")&&cat!=="Продано"&&cat!=="Под заказ"?`<button class="buy ghost" data-notify>Уведомить о поступлении</button>`:""}</div>`}
+ $("count").innerHTML=esc(l.length+" "+word(l.length))+(fl.length?` <button class="pill" data-clearf aria-label="Сбросить фильтры">${esc(fl.join(", "))} ×</button>`:""); $("grid").innerHTML=l.length?l.map(card).join(""):`<div class="empty">Здесь пока ничего нет. Попробуйте другую категорию или запрос.${(size||cat!=="Все")&&cat!=="Продано"?`<button class="buy ghost" data-notify>Уведомить о поступлении</button>`:""}</div>`}
 function renderFavs(){
  const l=order(ITEMS.filter(i=>favs.has(i.id)),"new");
  $("fgrid").innerHTML=l.length?l.map(card).join(""):`<div class="empty">Пока пусто. Нажмите на сердечко у товара, и он появится здесь.<button class="buy" data-tab-go="catalog">К каталогу</button></div>`}
@@ -643,10 +643,9 @@ async function toggleLike(t,v){
 
 const CL=["XS","S","M","L","XL"],SH=Array.from({length:11},(_,k)=>36+k);
 const sizeOk=i=>{if(!size)return true;if(size.t==="c")return i.size===size.v;const n=parseFloat(i.size);return !isNaN(n)&&Math.abs(n-size.v)<=.5};
-// Проданные — только во вкладке «Продано», вещи под заказ — только в «Под заказ»;
-// в «Все» и категориях — в наличии и в пути
-const inTab=i=>cat==="Продано"?i.status==="sold":cat==="Под заказ"?i.status==="order":i.status!=="sold"&&i.status!=="order";
-const catOk=i=>inTab(i)&&(cat==="Все"||cat==="Продано"||cat==="Под заказ"||i.cat===cat);
+// Проданные — только во вкладке «Продано»; в «Все» и категориях — в наличии, в пути и под заказ (с меткой)
+const inTab=i=>cat==="Продано"?i.status==="sold":i.status!=="sold";
+const catOk=i=>inTab(i)&&(cat==="Все"||cat==="Продано"||i.cat===cat);
 // Бренды собираются автоматически из товаров в базе: новый бренд из поста сразу появляется в фильтре.
 // Nike / NIKE / nike считаются одним брендом.
 let brand=null;
