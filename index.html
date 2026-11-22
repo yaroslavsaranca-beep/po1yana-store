@@ -309,6 +309,83 @@ html[data-t="10"] .nav{border:1.5px solid #ffffff4d}
 html[data-t="10"] .buy{border:1.5px solid #ffffffa6}
 html[data-t="10"] .buy.ghost,html[data-t="10"] .how{border:1.5px solid #ffffff66}
 
+
+/* ===== вкладка «Под заказ» ===== */
+.oform{padding-top:6px}
+.oform .fld:first-child{margin-top:4px}
+.fld textarea{width:100%;min-height:84px;resize:vertical;font:500 15px/1.4 var(--body);color:var(--light);background:#ffffff1c;border:1px solid #ffffff47;border-radius:10px;padding:11px 12px}
+.fld input,.fld textarea{-webkit-appearance:none;appearance:none}
+.fld input:focus,.fld textarea:focus{outline:none;border-color:#ffffffcc;box-shadow:0 0 0 3px #ffffff1f}
+.fld label i{font-style:normal;color:#ff8a9b}
+.fld label small{color:#f6f5f170}
+.fld ::placeholder{color:#f6f5f159}
+.fl2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.oadd{display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;border:1.5px dashed #ffffff59;border-radius:12px;color:#f6f5f1d9;font:500 14px var(--body);cursor:pointer}
+.oadd svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ophotos{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.ophotos:empty{display:none}
+.ophoto{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;background:#ffffff1c}
+.ophoto img{width:100%;height:100%;object-fit:cover}
+.ophoto button{position:absolute;top:3px;right:3px;width:22px;height:22px;border:0;border-radius:50%;background:#000b;color:#fff;font:600 13px/22px var(--body);padding:0;cursor:pointer}
+.oform .buy{margin-top:18px}
+.oform .buy:disabled{opacity:.6}
+.osent{text-align:center;padding:26px 18px}
+.osent b{display:block;font:800 20px/1.2 var(--head);margin:6px 0}
+.osent .ok{font-size:40px}
+.rq{display:grid;gap:4px;padding:12px 0;border-top:1px solid #ffffff1f}
+.rq:first-of-type{border-top:0}
+.rq b{font-weight:600}
+.rq small{color:#f6f5f1a6}
+.rqst{justify-self:start;padding:2px 9px;border-radius:99px;font:600 12px var(--body);background:#ffffff26;color:#fff}
+.rqst.new{background:#2a45ff}.rqst.work{background:#8b3dff}.rqst.done{background:#1f9d55}.rqst.rejected{background:#5a5a62}
+.rqph{display:flex;gap:6px;margin-top:6px}
+.rqph img{width:56px;height:56px;border-radius:8px;object-fit:cover;cursor:zoom-in}
+.rqa{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.rqa select,.rqa a{font:500 13px var(--body);color:var(--light);background:#ffffff1c;border:1px solid #ffffff47;border-radius:10px;padding:8px 10px;text-decoration:none}
+#areq .rq{padding:14px 0}
+
+/* ===== плавное переключение вкладок ===== */
+.nav{isolation:isolate}
+.nav .ind{position:absolute;z-index:-1;top:6px;bottom:6px;left:0;width:0;border-radius:16px;
+ background:linear-gradient(180deg,#2a2a30,#17171b);border:1px solid #ffffff66;box-shadow:inset 0 1px 0 #ffffff2e,0 4px 14px #0007;
+ transition:transform .38s cubic-bezier(.3,1.25,.4,1),width .38s cubic-bezier(.3,1.25,.4,1);pointer-events:none}
+html[data-t="10"] .nav button[aria-current=page],.nav button[aria-current=page]{background:transparent;border-color:transparent;box-shadow:none}
+.nav button{transition:color .25s,transform .2s}
+.nav button:active{transform:scale(.94)}
+.nav button[aria-current=page] svg{animation:navpop .35s ease-out}
+@keyframes navpop{40%{transform:scale(1.18)}}
+section.tin{animation:tin-r .32s cubic-bezier(.2,.8,.25,1) both}
+section.tin.back{animation-name:tin-l}
+@keyframes tin-r{from{opacity:0;transform:translateX(26px);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
+@keyframes tin-l{from{opacity:0;transform:translateX(-26px);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
+@media (prefers-reduced-motion:reduce){.nav .ind{transition:none}section.tin{animation:none}.nav button[aria-current=page] svg{animation:none}}
+
+
+/* ===== кнопка ⓘ и страница «О магазине» ===== */
+.ibtn{margin-left:auto;flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;padding:0;cursor:pointer;
+ background:#0f0f11;color:var(--light);border:1.5px solid #ffffff66;box-shadow:inset 0 1px 0 #ffffff1f}
+.ibtn svg,.ifact svg,.chev,.ilinks svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ibtn svg{width:22px;height:22px}
+.ibtn:active{transform:scale(.92)}
+.ihero{text-align:center;padding:26px 10px 18px}
+.ihero .ava.big{width:76px;height:76px;margin:0 auto 12px;display:block}
+.ihero h2{font:800 clamp(24px,8vw,32px)/1.05 var(--head)}
+.ihero p{color:#f6f5f1b8;margin-top:6px}
+.ifacts{display:grid;gap:10px}
+.ifact{display:flex;align-items:center;gap:10px}
+.ifact svg{flex:none;width:20px;height:20px}
+.ifact span{font-size:13px;color:#f6f5f1b8}
+button.panel.irow{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.irow b{display:block;font:700 16px/1.2 var(--body)}
+.irow small{display:block;margin-top:3px;font-size:13px;color:#f6f5f1a6}
+.chev{flex:none;width:20px;height:20px;opacity:.7}
+.ilinks{padding:4px 18px}
+.ilinks a{display:flex;align-items:center;justify-content:space-between;padding:15px 0;color:var(--light);text-decoration:none;font:600 15px var(--body)}
+.ilinks a+a{border-top:1px solid #ffffff1f}
+.ilinks a small{font-weight:400;color:#f6f5f1a6;margin-left:4px}
+.ilinks svg{width:18px;height:18px;opacity:.7}
+.nav .ind.off{opacity:0}
+
 /* широкий экран (ПК): магазин по центру, как на телефоне */
 body{max-width:620px;margin:0 auto}
 .nav{left:50%;right:auto;transform:translateX(-50%);width:min(596px,calc(100% - 24px))}
@@ -320,7 +397,8 @@ body{max-width:620px;margin:0 auto}
 <body>
 
 <section id="v-catalog">
-  <header class="top"><img class="ava" src="avatar.jpg" alt="" width="44" height="44"><h1>Po1yana.store</h1></header>
+  <header class="top"><img class="ava" src="avatar.jpg" alt="" width="44" height="44"><h1>Po1yana.store</h1>
+    <button class="ibtn" id="ibtn" data-tab-go="more" aria-label="О магазине"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.6v.1"/></svg></button></header>
   <div class="stick">
     <input class="search" id="q" type="search" placeholder="Поиск по бренду или модели" aria-label="Поиск">
     <div class="row"><div class="chips" id="chips"></div><button class="fbtn" id="fbtn" aria-label="Фильтры: бренд и размер"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button></div>
@@ -346,44 +424,68 @@ body{max-width:620px;margin:0 auto}
 </section>
 
 <section id="v-more" hidden>
-  <h2 class="t">Ещё</h2>
-  <p class="lead">Po1yana.store: только оригинальная брендовая одежда, обувь и сумки. Заказ оформляется через личные сообщения.</p>
-  <a class="buy ghost" id="toAdmin" data-tab-go="admin" href="#" hidden>Админ-панель</a>
-  <details class="panel acc" open><summary>Под заказ</summary>
-    <p>Не нашли нужный товар в каталоге? Отправьте запрос, и мы подберём его под заказ, новый или б/у.</p>
-    <ul><li>Бренд и модель</li><li>Размер</li><li>Фото или ссылка на товар (при наличии)</li><li>Ориентировочный бюджет</li></ul>
-    <p class="note">Товар под заказ оплачивается только полной оплатой.</p>
-    <a class="buy" data-go="order">Отправить запрос</a></details>
-  <details class="panel acc"><summary>Оплата и бронь</summary>
-    <ul><li>Товар в наличии: полная оплата на банковскую карту либо предоплата от 400 ₴ с отправкой наложенным платежом</li>
+  <div class="ihero"><img class="ava big" src="avatar.jpg" alt="" width="76" height="76"><h2>Po1yana.store</h2><p>Оригинальная брендовая одежда, обувь и сумки</p></div>
+  <div class="panel ifacts">
+    <div class="ifact"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.3l2.6 2.6L16 9.5"/></svg><b>Продаём только оригинал</b></div>
+    <div class="ifact"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.6v.1"/></svg><span>Состояние каждой вещи указано по шкале из 10</span></div>
+  </div>
+  <button class="panel irow" data-tab-go="reviews"><span><b>Отзывы покупателей</b><small id="icnt">Реальные отзывы из Telegram-канала</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+  <div class="panel"><h3>Как мы работаем</h3><ul><li>Все товары оригинальные</li><li>Заказ оформляется через личные сообщения</li><li>Состояние каждой вещи указано по шкале из 10</li></ul></div>
+  <div class="panel"><h3>Оплата и бронь</h3><ul><li>Товар в наличии: полная оплата на банковскую карту либо предоплата от 400 ₴ с отправкой наложенным платежом</li>
     <li>Бронирование: предоплата 500 ₴. Срок внесения оставшейся суммы согласовывается индивидуально, отправка после полной оплаты</li>
-    <li>Товар под заказ: только полная оплата</li></ul></details>
-  <details class="panel acc"><summary>Доставка</summary>
-    <ul><li>Способ и сроки доставки согласовываются перед покупкой</li></ul></details>
-  <details class="panel acc"><summary>О магазине</summary>
-    <ul><li>Все товары оригинальные</li><li>Заказ оформляется через личные сообщения</li><li>Состояние каждого товара указано по шкале из 10</li></ul></details>
-  <div class="panel"><h3>Контакты</h3>
-    <p>По вопросам заказа: Telegram @poonnnnn</p>
-    <a class="link" data-go="dm">Написать в Telegram</a>
-    <a class="link" data-go="tg">Telegram-канал</a>
-    <a class="link" data-go="ig">Instagram</a></div>
+    <li>Товар под заказ: только полная оплата</li></ul></div>
+  <div class="panel"><h3>Доставка</h3><ul><li>Способ и сроки доставки согласовываются перед покупкой</li></ul></div>
+  <button class="panel irow" data-tab-go="order"><span><b>Под заказ</b><small>Не нашли нужную вещь? Подберём и привезём под вас</small></span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+  <div class="panel ilinks">
+    <a href="#" data-go="tg"><span>Telegram-канал</span><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+    <a href="#" data-go="reviews"><span>Отзывы в канале</span><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+    <a href="#" data-go="ig"><span>Instagram</span><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+    <a href="#" data-go="dm"><span>Написать продавцу <small>@poonnnnn</small></span><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+  </div>
+  <a class="buy ghost" id="toAdmin" data-tab-go="admin" href="#" hidden>Админ-панель</a>
+</section>
+
+<section id="v-order" hidden>
+  <h2 class="t">Под заказ</h2>
+  <p class="lead">Не нашли нужную вещь в каталоге? Опишите, что ищете, — подберём и привезём под вас, новую или б/у.</p>
+  <div id="obox">
+  <form class="panel oform" id="oform" novalidate>
+    <div class="fld"><label for="o-what">Что ищете <i>*</i></label><textarea id="o-what" rows="3" maxlength="600" placeholder="Бренд, модель, цвет — всё, что помните"></textarea></div>
+    <div class="fl2">
+      <div class="fld"><label for="o-size">Размер</label><input id="o-size" maxlength="40" placeholder="M / 42" autocomplete="off"></div>
+      <div class="fld"><label for="o-budget">Бюджет</label><input id="o-budget" maxlength="60" placeholder="до 5 000 ₴" autocomplete="off"></div>
+    </div>
+    <div class="fld"><label for="o-link">Ссылка <small>· необязательно</small></label><input id="o-link" type="url" inputmode="url" maxlength="500" placeholder="https://" autocomplete="off"></div>
+    <div class="fld"><label>Фото <small>· необязательно, до 5</small></label>
+      <div class="ophotos" id="ophotos"></div>
+      <label class="oadd" id="oadd" for="o-files"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-8 8"/></svg>Добавить фото</label>
+      <input id="o-files" type="file" accept="image/*" multiple hidden></div>
+    <div class="fld"><label for="o-comment">Комментарий <small>· необязательно</small></label><textarea id="o-comment" rows="2" maxlength="800" placeholder="Сроки, пожелания"></textarea></div>
+    <button class="buy" id="osend" type="submit">Отправить заявку</button>
+    <p class="note" id="onote" hidden></p>
+  </form>
+  </div>
+  <div class="panel"><h3>Что стоит указать</h3><ul><li>Бренд и модель</li><li>Размер</li><li>Фото или ссылку, если есть</li><li>Бюджет, на который рассчитываете</li></ul></div>
+  <div class="panel"><h3>Как это работает</h3><ul><li>Отправляете заявку — продавец получает её сразу</li><li>Подбираем вещь и пишем вам в Telegram с вариантами</li><li>Товар под заказ оплачивается только полной оплатой</li></ul></div>
+  <div class="panel" id="omine" hidden><h3>Мои заявки</h3><div id="olist"></div></div>
 </section>
 
 <section id="v-admin" hidden>
   <h2 class="t">Админ</h2>
   <p class="lead">Быстрее всего добавлять товар так: перешлите пост из канала боту @po1yana_store_bot. Здесь можно добавить товар вручную, изменить цену, статус или удалить его.</p>
   <button class="buy" id="addItem">Добавить товар</button>
+  <div class="panel" id="areqp" style="margin-top:16px"><h3 id="areqh">Заявки «Под заказ»</h3><div id="areq"><p class="note">Загружаю…</p></div></div>
   <div class="bar" style="margin-top:16px"><span id="acount"></span></div>
   <div class="bar"><span>Статистика: уникальные покупатели</span>
     <select id="asort" aria-label="Сортировка товаров в админке"><option value="new">Сначала новые</option><option value="views">По просмотрам</option><option value="favs">По избранному</option></select></div>
   <div id="alist"></div>
 </section>
 
-<nav class="nav" id="nav">
+<nav class="nav" id="nav"><span class="ind" id="navind" aria-hidden="true"></span>
   <button data-tab="catalog" aria-current="page"><svg viewBox="0 0 24 24"><path d="M6 7h12l1 13H5L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>Каталог</button>
   <button data-tab="favs"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg><b class="badge" id="favn" hidden></b></span>Избранное</button>
+  <button data-tab="order"><svg viewBox="0 0 24 24"><path d="M4 8l8-4 8 4v8l-8 4-8-4V8z"/><path d="M4 8l8 4 8-4M12 12v8"/></svg>Под заказ</button>
   <button data-tab="reviews"><svg viewBox="0 0 24 24"><path d="M5 5h14v10H10l-5 4V5z"/><path d="M9 9h6M9 12h4"/></svg>Отзывы</button>
-  <button data-tab="more"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg>Ещё</button>
 </nav>
 <dialog id="sheet"></dialog>
 <dialog id="fsheet"></dialog>
@@ -432,12 +534,33 @@ let cat="Все",size=null;
 function go(url){tg?(url.includes("t.me/")?tg.openTelegramLink(url):tg.openLink(url)):window.open(url,"_blank")}
 document.body.addEventListener("click",e=>{const a=e.target.closest("[data-go]");if(a){e.preventDefault();go(LINKS[a.dataset.go])}});
 
+const TABS=["catalog","favs","order","reviews","more","admin"];
+let curTab="catalog";
+// Подложка под активной кнопкой плавно переезжает к новой
+function moveInd(instant){const b=$("nav").querySelector("button[aria-current=page]"),ind=$("navind");if(!ind)return;
+ ind.classList.toggle("off",!b);if(!b)return;
+ if(instant)ind.style.transition="none";
+ ind.style.width=b.offsetWidth+"px";ind.style.transform=`translateX(${b.offsetLeft}px)`;
+ if(instant){ind.offsetWidth;ind.style.transition=""}}
 function tab(name){
- ["catalog","favs","reviews","more","admin"].forEach(t=>$("v-"+t).hidden=t!==name);
- const nv=name==="admin"?"more":name;
- [...$("nav").children].forEach(b=>b.dataset.tab===nv?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
- if(name==="favs")renderFavs();if(name==="admin")renderAdmin();if(name==="reviews")openReviews();window.scrollTo(0,0)}
+ if(name===curTab){window.scrollTo({top:0,behavior:"smooth"});return}
+ const back=TABS.indexOf(name)<TABS.indexOf(curTab);curTab=name;
+ TABS.forEach(t=>{const sct=$("v-"+t);sct.hidden=t!==name;sct.classList.remove("tin","back")});
+ const sec=$("v-"+name);void sec.offsetWidth;sec.classList.add("tin");if(back)sec.classList.add("back");
+ const nv=name;
+ [...$("nav").querySelectorAll("button")].forEach(b=>b.dataset.tab===nv?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
+ moveInd();try{tg&&tg.HapticFeedback&&tg.HapticFeedback.selectionChanged()}catch(e){}
+ if(name==="favs")renderFavs();if(name==="admin"){renderAdmin();loadRequests()}if(name==="reviews")openReviews();if(name==="order")loadMine();if(name==="more")infoCount();
+ if(tg&&tg.BackButton){if(name==="more"||name==="admin")tg.BackButton.show();else tg.BackButton.hide()}
+ window.scrollTo(0,0)}
+if(tg&&tg.BackButton)tg.BackButton.onClick(()=>tab(curTab==="admin"?"more":"catalog"));
+// число отзывов на странице «О магазине»
+async function infoCount(){if(rState==="idle"||rState==="err")await loadReviews();
+ if(REVIEWS.length)$("icnt").textContent=`${REVIEWS.length} ${rword(REVIEWS.length)} · реальные отзывы из Telegram-канала`}
 $("nav").onclick=e=>{const b=e.target.closest("button");if(b)tab(b.dataset.tab)};
+addEventListener("resize",()=>moveInd(true));
+requestAnimationFrame(()=>moveInd(true));
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>moveInd(true));
 
 const chips=$("chips");
 chips.innerHTML=["Все",...CATS,"Продано"].map(c=>`<button class="chip" aria-pressed="${c===cat}">${esc(c)}</button>`).join("");
@@ -720,6 +843,64 @@ $("alist").addEventListener("click",e=>{const row=e.target.closest("[data-aid]")
   ask(`Удалить «${it.brand} ${it.model}» из каталога? Фото тоже удалятся.`,async ok=>{if(!ok)return;
    try{await api({action:"delete",id});ITEMS=ITEMS.filter(x=>x.id!==id);renderAdmin();render()}catch(x){alertMsg(x.message)}})}});
 $("addItem").onclick=()=>editItem(null);
+
+// ===== «Под заказ»: форма заявки =====
+const REQ_RU={new:"Новая",work:"В работе",done:"Привезли",rejected:"Отказ"};
+let oFiles=[];
+// большие фото с телефона уменьшаем до 1600px, чтобы заявка уходила быстро
+function shrink(f){return new Promise(res=>{const img=new Image(),u=URL.createObjectURL(f);
+ img.onload=()=>{const k=Math.min(1,1600/Math.max(img.width,img.height)),c=document.createElement("canvas");
+  c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+  c.toBlob(b=>{URL.revokeObjectURL(u);res(b||f)},"image/jpeg",.85)};
+ img.onerror=()=>{URL.revokeObjectURL(u);res(f)};img.src=u})}
+function drawOPhotos(){$("ophotos").innerHTML=oFiles.map((o,k)=>`<div class="ophoto"><img src="${o.url}" alt=""><button type="button" data-orm="${k}" aria-label="Убрать фото">×</button></div>`).join("");
+ $("oadd").hidden=oFiles.length>=5}
+$("o-files").onchange=e=>{for(const f of [...e.target.files]){if(oFiles.length>=5)break;if(!/^image\//.test(f.type))continue;oFiles.push({f,url:URL.createObjectURL(f)})}
+ e.target.value="";drawOPhotos()};
+$("ophotos").onclick=e=>{const b=e.target.closest("[data-orm]");if(!b)return;const [x]=oFiles.splice(+b.dataset.orm,1);URL.revokeObjectURL(x.url);drawOPhotos()};
+function oNote(t,bad){const n=$("onote");n.hidden=!t;n.textContent=t||"";n.style.color=bad?"#ff8a9b":""}
+$("oform").onsubmit=async e=>{e.preventDefault();
+ const what=$("o-what").value.trim();
+ if(what.length<3){oNote("Опишите, что ищете: бренд, модель, цвет",true);$("o-what").focus();return}
+ if(!tg||!tg.initData){oNote("Откройте магазин в Telegram, чтобы отправить заявку",true);return}
+ const b=$("osend");b.disabled=true;b.textContent="Отправляю…";oNote("");
+ try{const fd=new FormData();fd.append("action","order_request");
+  for(const k of ["what","size","budget","link","comment"])fd.append(k,$("o-"+k).value.trim());
+  for(const o of oFiles)fd.append("files",await shrink(o.f),"photo.jpg");
+  const d=await api(fd,true);
+  try{tg.HapticFeedback.notificationOccurred("success")}catch(x){}
+  oFiles.forEach(o=>URL.revokeObjectURL(o.url));oFiles=[];
+  $("obox").innerHTML=`<div class="panel osent"><div class="ok">✅</div><b>Заявка №${d.id} отправлена</b><p class="note">Продавец посмотрит и напишет вам в Telegram. Статус заявки видно ниже, в «Мои заявки».</p><button class="buy ghost" id="oagain" type="button">Отправить ещё одну</button></div>`;
+  $("oagain").onclick=resetOrderForm;loadMine()}
+ catch(x){oNote(x.message||"Не удалось отправить, попробуйте ещё раз",true);b.disabled=false;b.textContent="Отправить заявку"}};
+let OFORM_HTML=null;
+function resetOrderForm(){location.reload()}
+async function loadMine(){if(!tg||!tg.initData)return;
+ try{const d=await api({action:"my_requests"});const l=d.requests||[];$("omine").hidden=!l.length;
+  $("olist").innerHTML=l.map(r=>`<div class="rq"><span class="rqst ${r.status}">${REQ_RU[r.status]||r.status}</span><b>№${r.id} · ${esc(r.what)}</b>
+   <small>${[r.size&&"Размер: "+esc(r.size),r.budget&&"Бюджет: "+esc(r.budget),new Date(r.created_at).toLocaleDateString("ru-RU")].filter(Boolean).join(" · ")}</small></div>`).join("")}catch(e){}}
+
+// ===== заявки в админке =====
+let REQS=[];
+async function loadRequests(){if(!isAdmin)return;
+ try{REQS=(await api({action:"requests"})).requests||[];drawRequests()}catch(e){$("areq").innerHTML=`<p class="note">${esc(e.message)}</p>`}}
+function drawRequests(){const n=REQS.filter(r=>r.status==="new").length;
+ $("areqh").textContent=`Заявки «Под заказ»`+(n?` · новых: ${n}`:"");
+ $("areq").innerHTML=REQS.length?REQS.map(r=>`<div class="rq" data-rid="${r.id}"><span class="rqst ${r.status}">${REQ_RU[r.status]}</span>
+  <b>№${r.id} · ${esc(r.what)}</b>
+  <small>${[r.size&&"Размер: "+esc(r.size),r.budget&&"Бюджет: "+esc(r.budget)].filter(Boolean).join(" · ")||"Размер и бюджет не указаны"}</small>
+  ${r.comment?`<small>💬 ${esc(r.comment)}</small>`:""}
+  <small>${r.username?"@"+esc(r.username):esc(r.name||"Покупатель")} · ${new Date(r.created_at).toLocaleString("ru-RU",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}</small>
+  ${r.photos.length?`<div class="rqph">${r.photos.map(p=>`<img src="${esc(photoUrl(p))}" alt="" loading="lazy" data-rqimg="${esc(photoUrl(p))}">`).join("")}</div>`:""}
+  <div class="rqa"><select data-rqs aria-label="Статус заявки">${Object.entries(REQ_RU).map(([k,v])=>`<option value="${k}" ${k===r.status?"selected":""}>${v}</option>`).join("")}</select>
+   ${r.username?`<a href="#" data-rqdm="${esc(r.username)}">Написать</a>`:""}${r.link?`<a href="#" data-rqlink="${esc(r.link)}">Ссылка</a>`:""}</div></div>`).join("")
+  :`<p class="note">Заявок пока нет. Когда покупатель отправит заявку, она появится здесь и придёт вам в бота.</p>`}
+$("areq").addEventListener("change",async e=>{const s=e.target.closest("[data-rqs]");if(!s)return;const id=+s.closest("[data-rid]").dataset.rid;
+ s.disabled=true;try{await api({action:"request_status",id,status:s.value});const r=REQS.find(x=>x.id===id);if(r)r.status=s.value;drawRequests()}catch(x){alertMsg(x.message);s.disabled=false}});
+$("areq").addEventListener("click",e=>{const dm=e.target.closest("[data-rqdm]"),ln=e.target.closest("[data-rqlink]"),im=e.target.closest("[data-rqimg]");
+ if(dm){e.preventDefault();go("https://t.me/"+dm.dataset.rqdm)}
+ if(ln){e.preventDefault();go(ln.dataset.rqlink)}
+ if(im)go(im.dataset.rqimg)});
 function ask(t,cb){tg&&tg.showConfirm?tg.showConfirm(t,cb):cb(confirm(t))}
 function alertMsg(t){tg&&tg.showAlert?tg.showAlert(t):alert(t)}
 
@@ -802,7 +983,8 @@ loadMyLikes();
 // Сверка статусов с постами канала (#stock -> #sold) идёт на сервере в фоне
 if(tg&&tg.initData)api({action:"sync_items"}).catch(()=>{});
 load().then(()=>{const sp=(tg&&tg.initDataUnsafe&&tg.initDataUnsafe.start_param)||"";
- const m=sp.match(/^item_(\d+)$/)||location.hash.match(/item=(\d+)/);if(m)open(+m[1])});
+ const m=sp.match(/^item_(\d+)$/)||location.hash.match(/item=(\d+)/);if(m)open(+m[1]);
+ if(location.hash==="#requests"&&isAdmin)tab("admin");if(location.hash==="#order")tab("order")});
 </script>
 </body>
 </html>
