@@ -195,6 +195,8 @@ header.top{display:flex;align-items:center;gap:11px}
 dialog .close{position:relative;z-index:5;width:38px;height:38px;margin:-4px -4px 6px 8px;display:grid;place-items:center;border-radius:50%;background:#0f0f11d9;border:1.5px solid #ffffff59;font-size:24px;line-height:1;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 /* «В пути» — яркая синяя метка, как было изначально */
 .tag .st.transit{background:#2a45ff;color:#fff;border-color:#2a45ff}
+/* «Под заказ» — фиолетовая метка */
+.tag .st.order{background:#8b3dff;color:#fff;border-color:#8b3dff}
 .tag .fav{top:auto;bottom:8px;right:8px;width:34px;height:34px;display:grid;place-items:center;padding:0;background:#15151a8c;border:1px solid #ffffff40;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .fav svg{width:17px;height:17px;fill:none;stroke:#fff;stroke-width:2;stroke-linejoin:round}
 .fav.on svg{fill:#ff5470;stroke:#ff5470}
@@ -417,7 +419,7 @@ async function load(){
  loaded=true;updFavN();render();if(!$("v-favs").hidden)renderFavs();if(!$("v-admin").hidden)renderAdmin()}
 // цифра на вкладке «Избранное» (удалённые из базы товары не считаем)
 function updFavN(){const n=loaded?ITEMS.filter(i=>favs.has(i.id)).length:favs.size,b=$("favn");b.hidden=!n;b.textContent=n>99?"99+":n}
-const LABEL={transit:"В пути",sold:"Продано"};
+const LABEL={transit:"В пути",order:"Под заказ",sold:"Продано"};
 const fmt=n=>n.toLocaleString("ru-RU")+" "+CUR;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const $=id=>document.getElementById(id);
@@ -438,7 +440,7 @@ function tab(name){
 $("nav").onclick=e=>{const b=e.target.closest("button");if(b)tab(b.dataset.tab)};
 
 const chips=$("chips");
-chips.innerHTML=["Все",...CATS,"Продано"].map(c=>`<button class="chip" aria-pressed="${c===cat}">${esc(c)}</button>`).join("");
+chips.innerHTML=["Все",...CATS,"Под заказ","Продано"].map(c=>`<button class="chip" aria-pressed="${c===cat}">${esc(c)}</button>`).join("");
 chips.onclick=e=>{const b=e.target.closest(".chip");if(!b)return;cat=b.textContent;
  [...chips.children].forEach(x=>x.setAttribute("aria-pressed",x===b));render()};
 $("q").oninput=render;$("sort").onchange=render;
@@ -469,12 +471,12 @@ function priceHtml(i,inSheet){
  return inSheet?`<b class="pdrop">${h}</b>`:`<div class="price pdrop">${h}</div>`}
 
 // одна метка на карточке: Продано / В пути / NEW
-const badge=i=>i.status==="sold"?"Продано":i.status==="transit"?"В пути":isNew(i)?"NEW":"";
+const badge=i=>i.status==="sold"?"Продано":i.status==="transit"?"В пути":i.status==="order"?"Под заказ":isNew(i)?"NEW":"";
 const HEART=`<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>`;
 function card(i){const b=badge(i),on=favs.has(i.id);return `
  <article class="tag ${i.status==="sold"?"sold":""}" data-id="${i.id}" tabindex="0" role="button" aria-label="${esc(i.brand+" "+i.model)}">
   <div class="pw">${pic(i)}
-  ${b?`<span class="st ${b==="NEW"?"isnew":i.status==="transit"?"transit":""}">${b}</span>`:""}
+  ${b?`<span class="st ${b==="NEW"?"isnew":i.status==="transit"?"transit":i.status==="order"?"order":""}">${b}</span>`:""}
   <button class="fav ${on?"on":""}" data-fav="${i.id}" aria-label="${on?"Убрать из избранного":"В избранное"}" aria-pressed="${on}">${HEART}</button></div>
   <div class="info"><div class="brand">${esc(title(i).type)}</div><div class="name">${esc(title(i).name)}</div>
   <div class="meta">${esc(i.size)} · ${esc(i.cond)}</div>${priceHtml(i)}</div>
@@ -487,7 +489,7 @@ function render(){
  const l=order(visible(),$("sort").value);
  const bn=brand&&(ITEMS.find(i=>bkey(i.brand)===brand)||{brand}).brand.trim();
  const fl=[bn,size&&size.v].filter(Boolean);
- $("count").innerHTML=esc(l.length+" "+word(l.length))+(fl.length?` <button class="pill" data-clearf aria-label="Сбросить фильтры">${esc(fl.join(", "))} ×</button>`:""); $("grid").innerHTML=l.length?l.map(card).join(""):`<div class="empty">Здесь пока ничего нет. Попробуйте другую категорию или запрос.${(size||cat!=="Все")&&cat!=="Продано"?`<button class="buy ghost" data-notify>Уведомить о поступлении</button>`:""}</div>`}
+ $("count").innerHTML=esc(l.length+" "+word(l.length))+(fl.length?` <button class="pill" data-clearf aria-label="Сбросить фильтры">${esc(fl.join(", "))} ×</button>`:""); $("grid").innerHTML=l.length?l.map(card).join(""):`<div class="empty">Здесь пока ничего нет. Попробуйте другую категорию или запрос.${(size||cat!=="Все")&&cat!=="Продано"&&cat!=="Под заказ"?`<button class="buy ghost" data-notify>Уведомить о поступлении</button>`:""}</div>`}
 function renderFavs(){
  const l=order(ITEMS.filter(i=>favs.has(i.id)),"new");
  $("fgrid").innerHTML=l.length?l.map(card).join(""):`<div class="empty">Пока пусто. Нажмите на сердечко у товара, и он появится здесь.<button class="buy" data-tab-go="catalog">К каталогу</button></div>`}
@@ -504,8 +506,8 @@ const key=e=>{if(e.key==="Enter"&&e.target.classList.contains("tag"))open(+e.tar
 $("grid").onkeydown=key;$("fgrid").onkeydown=key;
 
 const sheet=$("sheet");
-function open(id){const i=ITEMS.find(x=>x.id===id);if(!i)return;const sold=i.status==="sold";track("view",i.id);
- const msg=`Здравствуйте! Хочу приобрести: ${i.brand} ${i.model}, размер ${i.size}, ${fmt(i.price)}`;
+function open(id){const i=ITEMS.find(x=>x.id===id);if(!i)return;const sold=i.status==="sold",toOrder=i.status==="order";track("view",i.id);
+ const msg=`Здравствуйте! Хочу ${toOrder?"заказать":"приобрести"}: ${i.brand} ${i.model}, размер ${i.size}, ${fmt(i.price)}`;
  LINKS.share="https://t.me/share/url?url="+encodeURIComponent(`https://t.me/${BOT}?startapp=item_${i.id}`)+"&text="+encodeURIComponent(i.brand+" "+i.model+", "+i.size+", "+fmt(i.price));
  LINKS.hold=`https://t.me/${SELLER}?text=${encodeURIComponent("Здравствуйте! Хочу забронировать ("+fmt(RESERVE)+"): "+i.brand+" "+i.model+", размер "+i.size)}`;
  LINKS.item=`https://t.me/${SELLER}?text=${encodeURIComponent(msg)}`;
@@ -514,7 +516,7 @@ function open(id){const i=ITEMS.find(x=>x.id===id);if(!i)return;const sold=i.sta
   <div class="brand">${esc(title(i).type)}</div><h2>${esc(title(i).name)}</h2>
   <dl><dt>Размер</dt><dd>${esc(i.size||"—")}</dd><dt>Состояние</dt><dd>${esc(i.cond||"—")}</dd>${LABEL[i.status]?`<dt>Статус</dt><dd>${LABEL[i.status]}</dd>`:""}<dt>Категория</dt><dd>${esc(i.cat)}</dd><dt>Цена</dt><dd>${priceHtml(i,true)}</dd></dl>
   ${sold?`<a class="buy" aria-disabled="true">Продано</a><div class="btn2 one"><a class="buy ghost" data-go="share">Поделиться</a></div>`
-   :`<a class="buy" data-go="item">Написать продавцу</a>
+   :`<a class="buy" data-go="item">${toOrder?"Заказать":"Написать продавцу"}</a>
   <div class="btn2"><a class="buy ghost" data-go="hold">Забронировать</a><a class="buy ghost" data-go="share">Поделиться</a></div>
   <details class="how"><summary>Как работает бронь?</summary><p>Вы вносите предоплату ${fmt(RESERVE)}, и товар закрепляется за вами. Срок внесения остатка согласовываем индивидуально, отправка после полной оплаты.</p></details>`}
   ${similarHtml(i)}`;
@@ -641,15 +643,17 @@ async function toggleLike(t,v){
 
 const CL=["XS","S","M","L","XL"],SH=Array.from({length:11},(_,k)=>36+k);
 const sizeOk=i=>{if(!size)return true;if(size.t==="c")return i.size===size.v;const n=parseFloat(i.size);return !isNaN(n)&&Math.abs(n-size.v)<=.5};
-// Проданные показываем только во вкладке «Продано»; в «Все» и категориях только в наличии и в пути
-const catOk=i=>cat==="Продано"?i.status==="sold":i.status!=="sold"&&(cat==="Все"||i.cat===cat);
+// Проданные — только во вкладке «Продано», вещи под заказ — только в «Под заказ»;
+// в «Все» и категориях — в наличии и в пути
+const inTab=i=>cat==="Продано"?i.status==="sold":cat==="Под заказ"?i.status==="order":i.status!=="sold"&&i.status!=="order";
+const catOk=i=>inTab(i)&&(cat==="Все"||cat==="Продано"||cat==="Под заказ"||i.cat===cat);
 // Бренды собираются автоматически из товаров в базе: новый бренд из поста сразу появляется в фильтре.
 // Nike / NIKE / nike считаются одним брендом.
 let brand=null;
 const bkey=s=>String(s||"").trim().toLowerCase();
 const brandOk=i=>!brand||bkey(i.brand)===brand;
 function brandList(){const m=new Map();
- ITEMS.filter(i=>(cat==="Продано"?i.status==="sold":i.status!=="sold")&&bkey(i.brand)).forEach(i=>{const k=bkey(i.brand);const o=m.get(k)||{k,name:i.brand.trim(),n:0};o.n++;m.set(k,o)});
+ ITEMS.filter(i=>inTab(i)&&bkey(i.brand)).forEach(i=>{const k=bkey(i.brand);const o=m.get(k)||{k,name:i.brand.trim(),n:0};o.n++;m.set(k,o)});
  if(brand&&!m.has(brand))m.set(brand,{k:brand,name:brand,n:0});
  return [...m.values()].sort((a,b)=>b.n-a.n||a.name.localeCompare(b.name))}
 // Search: every typed word must be the START of a word in brand/model ("lan" finds Lanvin, not "Atlantic")
@@ -685,7 +689,7 @@ const isAdmin=!!(me&&me.id===ADMIN_ID&&tg.initData);
 // Админ-панель открывается из вкладки «Ещё»
 $("toAdmin").hidden=!isAdmin;
 $("asort").onchange=()=>renderAdmin();
-const STATUS_RU={stock:"В наличии",transit:"В пути",sold:"Продано"};
+const STATUS_RU={stock:"В наличии",transit:"В пути",order:"Под заказ",sold:"Продано"};
 async function api(body,isForm){
  const r=await fetch(API,{method:"POST",headers:isForm?{"x-init-data":tg.initData}:{"content-type":"application/json","x-init-data":tg.initData},body:isForm?body:JSON.stringify(body)});
  const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||"Ошибка");return d}
