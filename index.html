@@ -411,6 +411,15 @@ html[data-t="10"] .nav{border-radius:999px}
 .szcol button[aria-pressed=true]{background:linear-gradient(180deg,#f6f5f1,#c9c8c2);color:#15151a;border-color:#fff}
 .szclear{grid-column:1/-1;padding:8px;border:0;background:transparent;color:#f6f5f1a6;font:500 13px var(--body);cursor:pointer;text-decoration:underline}
 
+
+/* фильтры: сортировка и цена */
+.sortrow{margin:4px 0 2px}
+.prow{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin-top:10px}
+.prow span{color:#f6f5f170}
+.prow input{width:100%;font:500 15px var(--body);color:var(--light);background:#ffffff1c;border:1px solid #ffffff47;border-radius:999px;padding:11px 16px;-webkit-appearance:none;appearance:none}
+.prow input:focus{outline:none;border-color:#ffffffcc}
+.prow input::placeholder{color:#f6f5f159}
+
 /* широкий экран (ПК): магазин по центру, как на телефоне */
 body{max-width:620px;margin:0 auto}
 .nav{left:50%;right:auto;transform:translateX(-50%);width:min(596px,calc(100% - 24px))}
@@ -429,7 +438,7 @@ body{max-width:620px;margin:0 auto}
     <div class="row"><div class="chips" id="chips"></div><button class="fbtn" id="fbtn" aria-label="Фильтры: бренд и размер"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button></div>
   </div>
   <div class="bar"><span id="count"></span>
-    <select id="sort" aria-label="Сортировка"><option value="new">Сначала новые</option><option value="asc">Дешевле</option><option value="desc">Дороже</option></select>
+    <select id="sort" aria-label="Сортировка"><option value="new">Сначала новые</option><option value="asc">Дешевле</option><option value="desc">Дороже</option><option value="pop">Популярные</option></select>
   </div>
   <main class="grid" id="grid"></main>
 </section>
@@ -597,7 +606,7 @@ chips.innerHTML=["Все",...CATS,"Продано"].map(c=>`<button class="chip"
 chips.onclick=e=>{const b=e.target.closest(".chip");if(!b)return;cat=b.textContent;
  [...chips.children].forEach(x=>x.setAttribute("aria-pressed",x===b));render()};
 $("q").oninput=render;$("sort").onchange=render;
-$("count").onclick=e=>{if(e.target.closest("[data-clearf]")){size=null;brand=null;$("fbtn").classList.remove("on");render()}};
+$("count").onclick=e=>{if(e.target.closest("[data-clearf]")){size=null;brand=null;pmin=null;pmax=null;$("fbtn").classList.remove("on");render()}};
 
 function pic(i){const h=[...i.brand].reduce((a,c)=>a+c.charCodeAt(0),0)%360;
  return i.photos[0]?`<div class="pic"><img src="${esc(photoUrl(i.photos[0]))}" alt="${esc(i.brand+" "+i.model)}" loading="lazy"></div>`
@@ -634,14 +643,20 @@ function card(i){const b=badge(i),on=favs.has(i.id);return `
   <div class="info"><div class="brand">${esc(title(i).type)}</div><div class="name">${esc(title(i).name)}</div>
   <div class="meta">${esc(i.size)} · ${esc(i.cond)}</div>${priceHtml(i)}</div>
  </article>`}
-const order=(l,s)=>l.sort((a,b)=>(a.status==="sold")-(b.status==="sold")||(s==="asc"?a.price-b.price:s==="desc"?b.price-a.price:b.id-a.id));
+// «Популярные»: уникальные просмотры + избранное (баллы считает сервер)
+let POP=null,popLoading=false;
+async function loadPop(){if(POP||popLoading||!tg||!tg.initData)return;popLoading=true;
+ try{const d=await api({action:"popular"});POP=new Map(d.popular.map(x=>[x.id,x.score]))}catch(e){POP=new Map()}
+ popLoading=false;render()}
+const pop=i=>(POP&&POP.get(i.id))||0;
+const order=(l,s)=>{if(s==="pop")loadPop();return l.sort((a,b)=>(a.status==="sold")-(b.status==="sold")||(s==="asc"?a.price-b.price:s==="desc"?b.price-a.price:s==="pop"?pop(b)-pop(a)||b.id-a.id:b.id-a.id))};
 const word=n=>{const m=n%10,d=n%100;return m===1&&d!==11?"товар":m>=2&&m<=4&&(d<12||d>14)?"товара":"товаров"};
 function render(){
  if(!loaded){$("count").textContent="";$("grid").innerHTML=`<p class="loading">Загружаем каталог…</p>`;return}
  if(loadErr){$("count").textContent="";$("grid").innerHTML=`<div class="empty">Не удалось загрузить каталог. Проверьте интернет и попробуйте снова.<button class="buy ghost" onclick="load()">Обновить</button></div>`;return}
  const l=order(visible(),$("sort").value);
  const bn=brand&&(ITEMS.find(i=>bkey(i.brand)===brand)||{brand}).brand.trim();
- const fl=[bn,size&&size.v].filter(Boolean);
+ const fl=[bn,size&&size.v,priceLabel()].filter(Boolean);
  $("count").innerHTML=esc(l.length+" "+word(l.length))+(fl.length?` <button class="pill" data-clearf aria-label="Сбросить фильтры">${esc(fl.join(", "))} ×</button>`:""); $("grid").innerHTML=l.length?l.map(card).join(""):`<div class="empty">Здесь пока ничего нет. Попробуйте другую категорию или запрос.${(size||cat!=="Все")&&cat!=="Продано"?`<button class="buy ghost" data-notify>Уведомить о поступлении</button>`:""}</div>`}
 function renderFavs(){
  const l=order(ITEMS.filter(i=>favs.has(i.id)),"new");
@@ -813,24 +828,41 @@ function brandList(){const m=new Map();
 const words=s=>String(s||"").toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(Boolean);
 const qOk=(i,qw)=>{if(!qw.length)return true;const w=words(title(i).name).filter(x=>!TYPE_WORDS.has(x)),joined=words(i.brand).join("");
  return qw.every(t=>w.some(x=>x.startsWith(t))||joined.startsWith(t))};
-const visible=()=>{const qw=words($("q").value);return ITEMS.filter(i=>catOk(i)&&sizeOk(i)&&brandOk(i)&&qOk(i,qw))};
+// Цена: от / до (в гривнах)
+let pmin=null,pmax=null;
+const PRANGES=[[null,2000,"до 2 000"],[2000,4000,"2 000–4 000"],[4000,6000,"4 000–6 000"],[6000,null,"от 6 000"]];
+const priceOk=i=>(pmin==null||i.price>=pmin)&&(pmax==null||i.price<=pmax);
+const priceLabel=()=>pmin==null&&pmax==null?"":pmin!=null&&pmax!=null?`${fmt(pmin)}–${fmt(pmax)}`:pmin!=null?`от ${fmt(pmin)}`:`до ${fmt(pmax)}`;
+const visible=()=>{const qw=words($("q").value);return ITEMS.filter(i=>catOk(i)&&sizeOk(i)&&brandOk(i)&&priceOk(i)&&qOk(i,qw))};
 const cnt=()=>visible().length;
 const fs=$("fsheet");
 function drawF(){
  const b=(t,v)=>`<span class="fchip"><button class="chip sm" data-t="${t}" data-v="${v}" aria-pressed="${!!size&&size.t===t&&size.v==v}">${v}</button>${likeBtn(t,v,"размер "+v)}</span>`;
  const bl=brandList();
  fs.innerHTML=`<button class="close" aria-label="Закрыть">×</button><h2>Фильтры</h2>
+ <div class="szrow sortrow">${[["new","Сначала новые"],["asc","Дешевле"],["desc","Дороже"],["pop","Популярные"]].map(([v,t])=>`<button class="chip sm" data-sort="${v}" aria-pressed="${$("sort").value===v}">${t}</button>`).join("")}</div>
  <p class="likehint">${LHEART}<span>Лайкни бренд или размер, и бот напишет, когда появится такая вещь</span></p>
  <h3>Бренд</h3><div class="szrow brands">${bl.map(o=>`<span class="fchip"><button class="chip sm" data-t="b" data-v="${esc(o.k)}" aria-pressed="${brand===o.k}">${esc(o.name)}${o.n?` <small>${o.n}</small>`:""}</button>${likeBtn("b",o.name,o.name)}</span>`).join("")||`<span class="note">Бренды появятся, когда в каталоге будут товары</span>`}</div>
  <h3>Размер одежды</h3><div class="szrow">${CL.map(v=>b("c",v)).join("")}</div>
  <h3>Размер обуви</h3><div class="szrow">${SH.map(v=>b("s",v)).join("")}</div>
+ <h3>Цена, ₴</h3><div class="szrow">${PRANGES.map(([a,z,t],k)=>`<button class="chip sm" data-pr="${k}" aria-pressed="${pmin===a&&pmax===z}">${t}</button>`).join("")}</div>
+ <div class="prow"><input id="pmin" inputmode="numeric" placeholder="от ${(Math.min(...ITEMS.map(i=>i.price).filter(Boolean))||0).toLocaleString("ru-RU")}" value="${pmin??""}" aria-label="Цена от"><span>—</span><input id="pmax" inputmode="numeric" placeholder="до ${Math.max(0,...ITEMS.map(i=>i.price)).toLocaleString("ru-RU")}" value="${pmax??""}" aria-label="Цена до"></div>
  <div class="fa"><button class="buy ghost" data-reset>Сбросить</button><button class="buy" data-apply>Показать (${cnt()})</button></div>`;
- $("fbtn").classList.toggle("on",!!(size||brand))}
+ $("fbtn").classList.toggle("on",!!(size||brand||pmin!=null||pmax!=null))}
 $("fbtn").onclick=()=>{drawF();fs.showModal()};
+// поля «от / до»: считаем сразу, не перерисовывая окно (чтобы не терялся курсор)
+fs.addEventListener("input",e=>{if(e.target.id!=="pmin"&&e.target.id!=="pmax")return;
+ const num=v=>{const n=parseInt(String(v).replace(/\D/g,""),10);return isNaN(n)?null:n};
+ pmin=num($("pmin").value);pmax=num($("pmax").value);
+ fs.querySelectorAll("[data-pr]").forEach(b=>{const [a,z]=PRANGES[+b.dataset.pr];b.setAttribute("aria-pressed",pmin===a&&pmax===z)});
+ const ap=fs.querySelector("[data-apply]");if(ap)ap.textContent=`Показать (${cnt()})`;
+ $("fbtn").classList.toggle("on",!!(size||brand||pmin!=null||pmax!=null));render()});
 fs.onclick=e=>{
  const lk=e.target.closest("[data-like]");if(lk){e.stopPropagation();lk.disabled=true;toggleLike(lk.dataset.like,lk.dataset.lv);return}
  if(e.target===fs||e.target.closest(".close")||e.target.closest("[data-apply]"))return fs.close();
- if(e.target.closest("[data-reset]")){size=null;brand=null}
+ if(e.target.closest("[data-reset]")){size=null;brand=null;pmin=null;pmax=null}
+ const so=e.target.closest("[data-sort]");if(so){$("sort").value=so.dataset.sort;drawF();render();return}
+ const pr=e.target.closest("[data-pr]");if(pr){const [a,z]=PRANGES[+pr.dataset.pr];const on=pmin===a&&pmax===z;pmin=on?null:a;pmax=on?null:z;drawF();render();return}
  const c=e.target.closest(".chip");
  if(c){const t=c.dataset.t;
   if(t==="b"){brand=brand===c.dataset.v?null:c.dataset.v}
