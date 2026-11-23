@@ -386,6 +386,31 @@ button.panel.irow{display:flex;align-items:center;justify-content:space-between;
 .ilinks svg{width:18px;height:18px;opacity:.7}
 .nav .ind.off{opacity:0}
 
+
+/* ===== круглое меню-капсула ===== */
+.nav{border-radius:999px;padding:6px;gap:2px}
+html[data-t="10"] .nav{border-radius:999px}
+.nav button{border-radius:999px;padding:9px 2px 8px}
+.nav .ind{border-radius:999px;top:6px;bottom:6px}
+
+/* ===== выбор размера в заявке ===== */
+.osel{display:flex;align-items:center;justify-content:space-between;width:100%;padding:11px 12px;border-radius:10px;cursor:pointer;
+ font:500 15px var(--body);color:var(--light);background:#ffffff1c;border:1px solid #ffffff47;text-align:left}
+.osel.empty span{color:#f6f5f159}
+.osel svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.7;transition:transform .25s}
+.osel[aria-expanded=true]{border-color:#ffffffcc;box-shadow:0 0 0 3px #ffffff1f}
+.osel[aria-expanded=true] svg{transform:rotate(180deg)}
+.szpick{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;padding:12px;border-radius:14px;background:#ffffff0f;border:1px solid #ffffff2e;
+ animation:szin .28s cubic-bezier(.2,.8,.25,1) both;transform-origin:top}
+.szpick[hidden]{display:none}
+@keyframes szin{from{opacity:0;transform:translateY(-6px) scaleY(.96)}to{opacity:1;transform:none}}
+.szcol{display:grid;gap:6px;align-content:start}
+.szcol h4{font:600 12px var(--body);letter-spacing:.06em;text-transform:uppercase;color:#f6f5f1a6;text-align:center;margin-bottom:2px}
+.szcol button{padding:8px 0;border-radius:999px;border:1px solid #ffffff3d;background:#0f0f11;color:var(--light);font:600 14px var(--body);cursor:pointer;transition:background .15s,transform .12s}
+.szcol button:active{transform:scale(.95)}
+.szcol button[aria-pressed=true]{background:linear-gradient(180deg,#f6f5f1,#c9c8c2);color:#15151a;border-color:#fff}
+.szclear{grid-column:1/-1;padding:8px;border:0;background:transparent;color:#f6f5f1a6;font:500 13px var(--body);cursor:pointer;text-decoration:underline}
+
 /* широкий экран (ПК): магазин по центру, как на телефоне */
 body{max-width:620px;margin:0 auto}
 .nav{left:50%;right:auto;transform:translateX(-50%);width:min(596px,calc(100% - 24px))}
@@ -452,8 +477,13 @@ body{max-width:620px;margin:0 auto}
   <form class="panel oform" id="oform" novalidate>
     <div class="fld"><label for="o-what">Что ищете <i>*</i></label><textarea id="o-what" rows="3" maxlength="600" placeholder="Бренд, модель, цвет — всё, что помните"></textarea></div>
     <div class="fl2">
-      <div class="fld"><label for="o-size">Размер</label><input id="o-size" maxlength="40" placeholder="M / 42" autocomplete="off"></div>
+      <div class="fld"><label for="o-size-btn">Размер</label><button type="button" class="osel empty" id="o-size-btn" aria-expanded="false" aria-controls="szpick"><span id="o-size-v">Выбрать</span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button><input type="hidden" id="o-size"></div>
       <div class="fld"><label for="o-budget">Бюджет</label><input id="o-budget" maxlength="60" placeholder="до 5 000 ₴" autocomplete="off"></div>
+    </div>
+    <div class="szpick" id="szpick" hidden>
+      <div class="szcol"><h4>Одежда</h4><button type="button" data-sz="XXS">XXS</button><button type="button" data-sz="XS">XS</button><button type="button" data-sz="S">S</button><button type="button" data-sz="M">M</button><button type="button" data-sz="L">L</button><button type="button" data-sz="XL">XL</button><button type="button" data-sz="XXL">XXL</button></div>
+      <div class="szcol"><h4>Обувь</h4><button type="button" data-sz="36">36</button><button type="button" data-sz="37">37</button><button type="button" data-sz="38">38</button><button type="button" data-sz="39">39</button><button type="button" data-sz="40">40</button><button type="button" data-sz="41">41</button><button type="button" data-sz="42">42</button><button type="button" data-sz="43">43</button><button type="button" data-sz="44">44</button><button type="button" data-sz="45">45</button><button type="button" data-sz="46">46</button></div>
+      <button type="button" class="szclear" data-sz="">Без размера</button>
     </div>
     <div class="fld"><label for="o-link">Ссылка <small>· необязательно</small></label><input id="o-link" type="url" inputmode="url" maxlength="500" placeholder="https://" autocomplete="off"></div>
     <div class="fld"><label>Фото <small>· необязательно, до 5</small></label>
@@ -858,6 +888,15 @@ function drawOPhotos(){$("ophotos").innerHTML=oFiles.map((o,k)=>`<div class="oph
 $("o-files").onchange=e=>{for(const f of [...e.target.files]){if(oFiles.length>=5)break;if(!/^image\//.test(f.type))continue;oFiles.push({f,url:URL.createObjectURL(f)})}
  e.target.value="";drawOPhotos()};
 $("ophotos").onclick=e=>{const b=e.target.closest("[data-orm]");if(!b)return;const [x]=oFiles.splice(+b.dataset.orm,1);URL.revokeObjectURL(x.url);drawOPhotos()};
+
+// выбор размера: слева одежда, справа обувь
+function szOpen(on){$("szpick").hidden=!on;$("o-size-btn").setAttribute("aria-expanded",on)}
+$("o-size-btn").onclick=()=>szOpen($("szpick").hidden);
+$("szpick").onclick=e=>{const b=e.target.closest("[data-sz]");if(!b)return;const v=b.dataset.sz;
+ $("o-size").value=v;$("o-size-v").textContent=v||"Выбрать";$("o-size-btn").classList.toggle("empty",!v);
+ $("szpick").querySelectorAll("[data-sz]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.sz===v&&!!v));
+ try{tg.HapticFeedback.selectionChanged()}catch(x){}
+ szOpen(false)};
 function oNote(t,bad){const n=$("onote");n.hidden=!t;n.textContent=t||"";n.style.color=bad?"#ff8a9b":""}
 $("oform").onsubmit=async e=>{e.preventDefault();
  const what=$("o-what").value.trim();
