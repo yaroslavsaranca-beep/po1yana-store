@@ -439,6 +439,14 @@ header.top .ibtn svg{width:23px;height:23px}
 .rqa .rqdel{margin-left:auto;font:500 13px var(--body);color:#ff8a9b;background:#ff54700f;border:1px solid #ff547066;border-radius:10px;padding:8px 10px;cursor:pointer}
 .rqmore{margin-top:8px}
 
+
+/* автор отзыва — ссылка на профиль */
+.rvlink{display:inline-flex;align-items:center;gap:5px;color:inherit;text-decoration:none;border-bottom:1px dashed #ffffff66}
+.rvlink svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.65}
+.rvu{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid #ffffff1f}
+.rvu input{flex:1;min-width:0;font:500 14px var(--body);color:var(--light);background:#ffffff1c;border:1px solid #ffffff47;border-radius:10px;padding:9px 11px}
+.rvu button{font:500 14px var(--body);color:var(--light);background:#ffffff1c;border:1px solid #ffffff47;border-radius:10px;padding:9px 12px;cursor:pointer}
+
 /* широкий экран (ПК): магазин по центру, как на телефоне */
 body{max-width:620px;margin:0 auto}
 .nav{left:50%;right:auto;transform:translateX(-50%);width:min(596px,calc(100% - 24px))}
@@ -1071,12 +1079,21 @@ function renderReviews(){
  $("rcount").textContent=REVIEWS.length?REVIEWS.length+" "+rword(REVIEWS.length):"";
  box.innerHTML=REVIEWS.map(r=>`<article class="panel rv" data-rid="${r.id}">
   ${isAdmin?`<button class="rvx" data-rhide aria-label="Скрыть отзыв">×</button>`:""}
-  <div class="rvh"><span class="rva">${esc(r.author||"Покупатель")}</span><span class="rvd">${esc(rdate(r.posted_at))}</span></div>
+  <div class="rvh">${r.author_username
+   ?`<a href="#" class="rva rvlink" data-ru="${esc(r.author_username)}">${esc(r.author||"@"+r.author_username)}<svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>`
+   :`<span class="rva">${esc(r.author||"Покупатель")}</span>`}<span class="rvd">${esc(rdate(r.posted_at))}</span></div>
   ${r.item?`<span class="rvi">${esc(r.item)}</span>`:""}
   ${r.text?`<p class="rvt">${esc(r.text)}</p>`:""}
   ${r.photos.length?`<div class="rvp">${r.photos.map((p,k)=>`<img src="${esc(photoUrl(p))}" data-rph="${k}" alt="Фото к отзыву" loading="lazy">`).join("")}</div>`:""}
+  ${isAdmin?`<div class="rvu"><input data-ruin placeholder="@ник покупателя" value="${r.author_username?"@"+esc(r.author_username):""}" autocomplete="off" aria-label="Ник автора отзыва"><button data-rusave>Сохранить</button></div>`:""}
  </article>`).join("")||`<div class="empty">Отзывов пока нет.</div>`}
 $("rlist").addEventListener("click",e=>{const card=e.target.closest("[data-rid]");if(!card)return;const id=+card.dataset.rid;const r=REVIEWS.find(x=>x.id===id);if(!r)return;
+ // автор отзыва — ссылка на его профиль в Telegram
+ const ru=e.target.closest("[data-ru]");if(ru){e.preventDefault();go("https://t.me/"+ru.dataset.ru);return}
+ // админ: вписать ник вручную (для тех, кто скрыл профиль при пересылке)
+ const sv=e.target.closest("[data-rusave]");if(sv){const inp=card.querySelector("[data-ruin]");sv.disabled=true;
+  api({action:"review_author",id,username:inp.value}).then(d=>{r.author_username=d.review.author_username;renderReviews()})
+   .catch(x=>{alertMsg(x.message);sv.disabled=false});return}
  const ph=e.target.closest("[data-rph]");
  if(ph){openViewer(r.photos.map(photoUrl),+ph.dataset.rph);return}
  if(e.target.closest("[data-rhide]"))ask("Скрыть этот отзыв из приложения? В канале он останется.",async ok=>{if(!ok)return;
