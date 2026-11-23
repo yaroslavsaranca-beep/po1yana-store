@@ -337,7 +337,7 @@ html[data-t="10"] .buy.ghost,html[data-t="10"] .how{border:1.5px solid #ffffff66
 .rq b{font-weight:600}
 .rq small{color:#f6f5f1a6}
 .rqst{justify-self:start;padding:2px 9px;border-radius:99px;font:600 12px var(--body);background:#ffffff26;color:#fff}
-.rqst.new{background:#2a45ff}.rqst.work{background:#8b3dff}.rqst.done{background:#1f9d55}.rqst.rejected{background:#5a5a62}
+.rqst.s-new{background:#2a45ff}.rqst.s-work{background:#8b3dff}.rqst.s-done{background:#1f9d55}.rqst.s-rejected{background:#5a5a62}
 .rqph{display:flex;gap:6px;margin-top:6px}
 .rqph img{width:56px;height:56px;border-radius:8px;object-fit:cover;cursor:zoom-in}
 .rqa{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
@@ -430,6 +430,14 @@ header.top .ibtn svg{width:23px;height:23px}
 .hsub{margin:9px 2px 0;font:400 12px var(--body);color:#f6f5f1a6}
 .horig{display:flex;align-items:center;gap:6px;margin:7px 2px 12px;font:600 12.5px var(--body)}
 .horig svg{flex:none;width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+
+/* заявки в админке: фильтры, удаление, «показать ещё» */
+#areqp summary{font:800 17px/1.2 var(--head)}
+.rqnew{display:inline-block;white-space:nowrap;margin-left:6px;padding:2px 8px;border-radius:99px;background:#2a45ff;color:#fff;font:600 12px var(--body);vertical-align:2px}
+.rqf{margin:12px 0 4px}
+.rqa .rqdel{margin-left:auto;font:500 13px var(--body);color:#ff8a9b;background:#ff54700f;border:1px solid #ff547066;border-radius:10px;padding:8px 10px;cursor:pointer}
+.rqmore{margin-top:8px}
 
 /* широкий экран (ПК): магазин по центру, как на телефоне */
 body{max-width:620px;margin:0 auto}
@@ -526,7 +534,8 @@ body{max-width:620px;margin:0 auto}
   <h2 class="t">Админ</h2>
   <p class="lead">Быстрее всего добавлять товар так: перешлите пост из канала боту @po1yana_store_bot. Здесь можно добавить товар вручную, изменить цену, статус или удалить его.</p>
   <button class="buy" id="addItem">Добавить товар</button>
-  <div class="panel" id="areqp" style="margin-top:16px"><h3 id="areqh">Заявки «Под заказ»</h3><div id="areq"><p class="note">Загружаю…</p></div></div>
+  <details class="panel acc" id="areqp" open style="margin-top:16px"><summary id="areqh">Заявки «Под заказ»</summary>
+    <div class="szrow rqf" id="rqf"></div><div id="areq"><p class="note">Загружаю…</p></div></details>
   <div class="bar" style="margin-top:16px"><span id="acount"></span></div>
   <div class="bar"><span>Статистика: уникальные покупатели</span>
     <select id="asort" aria-label="Сортировка товаров в админке"><option value="new">Сначала новые</option><option value="views">По просмотрам</option><option value="favs">По избранному</option></select></div>
@@ -964,30 +973,43 @@ let OFORM_HTML=null;
 function resetOrderForm(){location.reload()}
 async function loadMine(){if(!tg||!tg.initData)return;
  try{const d=await api({action:"my_requests"});const l=d.requests||[];$("omine").hidden=!l.length;
-  $("olist").innerHTML=l.map(r=>`<div class="rq"><span class="rqst ${r.status}">${REQ_RU[r.status]||r.status}</span><b>№${r.id} · ${esc(r.what)}</b>
+  $("olist").innerHTML=l.map(r=>`<div class="rq"><span class="rqst s-${r.status}">${REQ_RU[r.status]||r.status}</span><b>№${r.id} · ${esc(r.what)}</b>
    <small>${[r.size&&"Размер: "+esc(r.size),r.budget&&"Бюджет: "+esc(r.budget),new Date(r.created_at).toLocaleDateString("ru-RU")].filter(Boolean).join(" · ")}</small></div>`).join("")}catch(e){}}
 
 // ===== заявки в админке =====
 let REQS=[];
 async function loadRequests(){if(!isAdmin)return;
  try{REQS=(await api({action:"requests"})).requests||[];drawRequests()}catch(e){$("areq").innerHTML=`<p class="note">${esc(e.message)}</p>`}}
+// Фильтр и «Показать ещё», чтобы длинный список не отодвигал товары далеко вниз
+let rqFilter="active",rqShown=5;
+const RQ_FILTERS=[["active","Активные",r=>r.status==="new"||r.status==="work"],["done","Привезли",r=>r.status==="done"],["rejected","Отказ",r=>r.status==="rejected"],["all","Все",()=>true]];
 function drawRequests(){const n=REQS.filter(r=>r.status==="new").length;
- $("areqh").textContent=`Заявки «Под заказ»`+(n?` · новых: ${n}`:"");
- $("areq").innerHTML=REQS.length?REQS.map(r=>`<div class="rq" data-rid="${r.id}"><span class="rqst ${r.status}">${REQ_RU[r.status]}</span>
+ $("areqh").innerHTML=`Заявки «Под заказ»`+(n?` <span class="rqnew">новых: ${n}</span>`:"");
+ $("rqf").innerHTML=RQ_FILTERS.map(([k,t,f])=>`<button class="chip sm" data-rqf="${k}" aria-pressed="${rqFilter===k}">${t} <small>${REQS.filter(f).length}</small></button>`).join("");
+ const l=REQS.filter(RQ_FILTERS.find(x=>x[0]===rqFilter)[2]),vis=l.slice(0,rqShown);
+ $("areq").innerHTML=(vis.length?vis.map(r=>`<div class="rq" data-rid="${r.id}"><span class="rqst s-${r.status}">${REQ_RU[r.status]}</span>
   <b>№${r.id} · ${esc(r.what)}</b>
   <small>${[r.size&&"Размер: "+esc(r.size),r.budget&&"Бюджет: "+esc(r.budget)].filter(Boolean).join(" · ")||"Размер и бюджет не указаны"}</small>
   ${r.comment?`<small>💬 ${esc(r.comment)}</small>`:""}
   <small>${r.username?"@"+esc(r.username):esc(r.name||"Покупатель")} · ${new Date(r.created_at).toLocaleString("ru-RU",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}</small>
   ${r.photos.length?`<div class="rqph">${r.photos.map(p=>`<img src="${esc(photoUrl(p))}" alt="" loading="lazy" data-rqimg="${esc(photoUrl(p))}">`).join("")}</div>`:""}
   <div class="rqa"><select data-rqs aria-label="Статус заявки">${Object.entries(REQ_RU).map(([k,v])=>`<option value="${k}" ${k===r.status?"selected":""}>${v}</option>`).join("")}</select>
-   ${r.username?`<a href="#" data-rqdm="${esc(r.username)}">Написать</a>`:""}${r.link?`<a href="#" data-rqlink="${esc(r.link)}">Ссылка</a>`:""}</div></div>`).join("")
-  :`<p class="note">Заявок пока нет. Когда покупатель отправит заявку, она появится здесь и придёт вам в бота.</p>`}
+   ${r.username?`<a href="#" data-rqdm="${esc(r.username)}">Написать</a>`:""}${r.link?`<a href="#" data-rqlink="${esc(r.link)}">Ссылка</a>`:""}
+   <button class="rqdel" data-rqdel>Удалить</button></div></div>`).join("")
+  :`<p class="note">${REQS.length?"В этом разделе заявок нет.":"Заявок пока нет. Когда покупатель отправит заявку, она появится здесь и придёт вам в бота."}</p>`)
+  +(l.length>rqShown?`<button class="buy ghost rqmore" data-rqmore>Показать ещё (${Math.min(10,l.length-rqShown)} из ${l.length-rqShown})</button>`:"")}
+$("rqf").addEventListener("click",e=>{const b=e.target.closest("[data-rqf]");if(!b)return;rqFilter=b.dataset.rqf;rqShown=5;drawRequests()});
 $("areq").addEventListener("change",async e=>{const s=e.target.closest("[data-rqs]");if(!s)return;const id=+s.closest("[data-rid]").dataset.rid;
  s.disabled=true;try{await api({action:"request_status",id,status:s.value});const r=REQS.find(x=>x.id===id);if(r)r.status=s.value;drawRequests()}catch(x){alertMsg(x.message);s.disabled=false}});
 $("areq").addEventListener("click",e=>{const dm=e.target.closest("[data-rqdm]"),ln=e.target.closest("[data-rqlink]"),im=e.target.closest("[data-rqimg]");
  if(dm){e.preventDefault();go("https://t.me/"+dm.dataset.rqdm)}
  if(ln){e.preventDefault();go(ln.dataset.rqlink)}
- if(im)go(im.dataset.rqimg)});
+ if(im)go(im.dataset.rqimg);
+ if(e.target.closest("[data-rqmore]")){rqShown+=10;drawRequests()}
+ const del=e.target.closest("[data-rqdel]");
+ if(del){const id=+del.closest("[data-rid]").dataset.rid;
+  ask(`Удалить заявку №${id}? Фото заявки тоже удалятся.`,async ok=>{if(!ok)return;del.disabled=true;
+   try{await api({action:"request_delete",id});REQS=REQS.filter(x=>x.id!==id);drawRequests()}catch(x){alertMsg(x.message);del.disabled=false}})}});
 function ask(t,cb){tg&&tg.showConfirm?tg.showConfirm(t,cb):cb(confirm(t))}
 function alertMsg(t){tg&&tg.showAlert?tg.showAlert(t):alert(t)}
 
