@@ -860,6 +860,8 @@ fs.addEventListener("input",e=>{if(e.target.id!=="pmin"&&e.target.id!=="pmax")re
 fs.onclick=e=>{
  const lk=e.target.closest("[data-like]");if(lk){e.stopPropagation();lk.disabled=true;toggleLike(lk.dataset.like,lk.dataset.lv);return}
  if(e.target===fs||e.target.closest(".close")||e.target.closest("[data-apply]"))return fs.close();
+ // перерисовываем окно только по нажатию кнопок: клик по полю «от / до» не должен сбивать курсор
+ if(!e.target.closest("button"))return;
  if(e.target.closest("[data-reset]")){size=null;brand=null;pmin=null;pmax=null}
  const so=e.target.closest("[data-sort]");if(so){$("sort").value=so.dataset.sort;drawF();render();return}
  const pr=e.target.closest("[data-pr]");if(pr){const [a,z]=PRANGES[+pr.dataset.pr];const on=pmin===a&&pmax===z;pmin=on?null:a;pmax=on?null:z;drawF();render();return}
