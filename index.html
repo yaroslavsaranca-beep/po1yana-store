@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Po1yana.store</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600&family=Archivo:ital,wght@1,900&display=swap" rel="stylesheet">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 :root{--paper:rgba(246,245,241,.95);--light:#f6f5f1;--ink:#15151a;--mute:#6d6c68;--sig:#2a45ff;--sold:#b9b7b0;
@@ -420,6 +420,17 @@ html[data-t="10"] .nav{border-radius:999px}
 .prow input:focus{outline:none;border-color:#ffffffcc}
 .prow input::placeholder{color:#f6f5f159}
 
+
+/* ===== компактная шапка: маленький логотип, как у Lvivskiy ===== */
+header.top{gap:9px;padding:14px 2px 0}
+header.top .ava{width:34px;height:34px;box-shadow:0 0 0 2px #ffffff14,0 4px 12px #0008}
+header.top h1.logo{font:italic 900 17px/.86 'Archivo','Arial Black',sans-serif;letter-spacing:-.035em;text-transform:uppercase;margin:0}
+header.top .ibtn{width:32px;height:32px;border:0;background:transparent;box-shadow:none}
+header.top .ibtn svg{width:23px;height:23px}
+.hsub{margin:9px 2px 0;font:400 12px var(--body);color:#f6f5f1a6}
+.horig{display:flex;align-items:center;gap:6px;margin:7px 2px 12px;font:600 12.5px var(--body)}
+.horig svg{flex:none;width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
 /* широкий экран (ПК): магазин по центру, как на телефоне */
 body{max-width:620px;margin:0 auto}
 .nav{left:50%;right:auto;transform:translateX(-50%);width:min(596px,calc(100% - 24px))}
@@ -431,8 +442,10 @@ body{max-width:620px;margin:0 auto}
 <body>
 
 <section id="v-catalog">
-  <header class="top"><img class="ava" src="avatar.jpg" alt="" width="44" height="44"><h1>Po1yana.store</h1>
+  <header class="top"><img class="ava" src="avatar.jpg" alt="" width="34" height="34"><h1 class="logo" aria-label="Po1yana.store">Po1yana<br>store</h1>
     <button class="ibtn" id="ibtn" data-tab-go="more" aria-label="О магазине"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.6v.1"/></svg></button></header>
+  <p class="hsub">Брендовая одежда, обувь и сумки · Кропивницкий</p>
+  <p class="horig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.3l2.6 2.6L16 9.5"/></svg>Продаём только оригинал</p>
   <div class="stick">
     <input class="search" id="q" type="search" placeholder="Поиск по названию вещи" aria-label="Поиск">
     <div class="row"><div class="chips" id="chips"></div><button class="fbtn" id="fbtn" aria-label="Фильтры: бренд и размер"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button></div>
