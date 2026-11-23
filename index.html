@@ -425,7 +425,7 @@ body{max-width:620px;margin:0 auto}
   <header class="top"><img class="ava" src="avatar.jpg" alt="" width="44" height="44"><h1>Po1yana.store</h1>
     <button class="ibtn" id="ibtn" data-tab-go="more" aria-label="О магазине"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.6v.1"/></svg></button></header>
   <div class="stick">
-    <input class="search" id="q" type="search" placeholder="Поиск по бренду или модели" aria-label="Поиск">
+    <input class="search" id="q" type="search" placeholder="Поиск по названию вещи" aria-label="Поиск">
     <div class="row"><div class="chips" id="chips"></div><button class="fbtn" id="fbtn" aria-label="Фильтры: бренд и размер"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button></div>
   </div>
   <div class="bar"><span id="count"></span>
@@ -808,9 +808,10 @@ function brandList(){const m=new Map();
  ITEMS.filter(i=>inTab(i)&&bkey(i.brand)).forEach(i=>{const k=bkey(i.brand);const o=m.get(k)||{k,name:i.brand.trim(),n:0};o.n++;m.set(k,o)});
  if(brand&&!m.has(brand))m.set(brand,{k:brand,name:brand,n:0});
  return [...m.values()].sort((a,b)=>b.n-a.n||a.name.localeCompare(b.name))}
-// Search: every typed word must be the START of a word in brand/model ("lan" finds Lanvin, not "Atlantic")
+// Поиск только по названию вещи (крупная строка на карточке: «Stone Island Down»),
+// без типа вещи (Sweatshirt, Jacket, Zip…): каждое слово запроса — начало слова в названии ("lan" -> Lanvin)
 const words=s=>String(s||"").toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(Boolean);
-const qOk=(i,qw)=>{if(!qw.length)return true;const w=words(i.brand+" "+i.model),joined=words(i.brand).join("");
+const qOk=(i,qw)=>{if(!qw.length)return true;const w=words(title(i).name).filter(x=>!TYPE_WORDS.has(x)),joined=words(i.brand).join("");
  return qw.every(t=>w.some(x=>x.startsWith(t))||joined.startsWith(t))};
 const visible=()=>{const qw=words($("q").value);return ITEMS.filter(i=>catOk(i)&&sizeOk(i)&&brandOk(i)&&qOk(i,qw))};
 const cnt=()=>visible().length;
